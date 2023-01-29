@@ -24,9 +24,9 @@ class ImageListViewController: UIViewController {
         }
         
         let isLiked = indexPath.row % 2 == 0
-        let likeImage = isLiked ? UIImage(named: "Button Like On") : UIImage(named: "Button Like Off")
+        let likeImage = isLiked ? UIImage(named: "Like On Button") : UIImage(named: "Like Off Button")
         
-        cell.cellImage.image = photoImage
+        cell.photoImage.image = photoImage
         cell.likeButton.setImage(likeImage, for: .normal)
         cell.dateLabel.text = dateFormatter.string(from: Date())
     }

@@ -63,9 +63,9 @@
 				8E5BC9C42986A721001E022C /* ImageList */,
 				8E5BC9A729818F96001E022C /* AppDelegate.swift */,
 				8E5BC9A929818F96001E022C /* SceneDelegate.swift */,
+				8E5BC9B229818F97001E022C /* LaunchScreen.storyboard */,
 				8E5BC9AD29818F96001E022C /* Main.storyboard */,
 				8E5BC9B029818F97001E022C /* Assets.xcassets */,
-				8E5BC9B229818F97001E022C /* LaunchScreen.storyboard */,
 				8E5BC9B529818F97001E022C /* Info.plist */,
 			);
 			path = ImageFeed;

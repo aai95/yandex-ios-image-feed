@@ -28,7 +28,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="140"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="F8s-pI-jpn" userLabel="Cell Image">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="F8s-pI-jpn" userLabel="Photo Image">
                                                     <rect key="frame" x="16" y="4" width="343" height="132"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
@@ -51,8 +51,8 @@
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LfW-HY-kq5" userLabel="Date Label">
-                                                    <rect key="frame" x="24.000000000000007" y="112.33333333333333" width="101.66666666666669" height="15.666666666666671"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="31 января 2023" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LfW-HY-kq5" userLabel="Date Label">
+                                                    <rect key="frame" x="24.000000000000007" y="112.33333333333333" width="96.666666666666686" height="15.666666666666671"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" name="YP White (iOS)"/>
                                                     <nil key="highlightedColor"/>
@@ -60,7 +60,7 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GBX-OB-zit" userLabel="Like Button">
                                                     <rect key="frame" x="321" y="12" width="30" height="26"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                    <state key="normal" image="Button Like On"/>
+                                                    <state key="normal" image="Like On Button"/>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -80,9 +80,9 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="YP Black (iOS)"/>
                                         <connections>
-                                            <outlet property="cellImage" destination="F8s-pI-jpn" id="4d4-bY-ZpN"/>
                                             <outlet property="dateLabel" destination="LfW-HY-kq5" id="zah-e9-QXO"/>
                                             <outlet property="likeButton" destination="GBX-OB-zit" id="q8L-ac-Z9f"/>
+                                            <outlet property="photoImage" destination="F8s-pI-jpn" id="4d4-bY-ZpN"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -97,8 +97,8 @@
                         <constraints>
                             <constraint firstItem="SIo-hi-OV6" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="PI8-De-rTA"/>
                             <constraint firstItem="SIo-hi-OV6" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="TAO-2g-5an"/>
-                            <constraint firstItem="SIo-hi-OV6" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="ghp-Kb-hcq"/>
                             <constraint firstItem="SIo-hi-OV6" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="tRz-nu-8hw"/>
+                            <constraint firstItem="SIo-hi-OV6" firstAttribute="bottom" secondItem="8bC-Xf-vdC" secondAttribute="bottom" id="uOY-Jh-9vL"/>
                         </constraints>
                     </view>
                     <connections>
@@ -112,7 +112,7 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="Button Like On" width="29.333333969116211" height="26"/>
+        <image name="Like On Button" width="29.333333969116211" height="26"/>
         <namedColor name="YP Black (iOS)">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
