@@ -2,13 +2,6 @@ import UIKit
 
 class ImageListViewController: UIViewController {
     
-    @IBOutlet private var tableView: UITableView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-    }
-    
     private let photoNames: [String] = Array(0..<21).map{ "\($0)" }
     
     private lazy var dateFormatter: DateFormatter = {
@@ -17,6 +10,13 @@ class ImageListViewController: UIViewController {
         formatter.timeStyle = .none
         return formatter
     }()
+    
+    @IBOutlet private var tableView: UITableView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+    }
     
     private func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
         guard let photoImage = UIImage(named: photoNames[indexPath.row]) else {
