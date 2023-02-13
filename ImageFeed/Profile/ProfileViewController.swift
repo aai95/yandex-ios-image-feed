@@ -2,10 +2,62 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private let profileImage: UIImageView = {
+        let image = UIImageView(image: UIImage(named: "Profile Image"))
+        
+        image.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        image.heightAnchor.constraint(equalTo: image.widthAnchor).isActive = true
+        
+        return image
+    }()
+    
+    private let logoutButton: UIButton = {
+        let button = UIButton(type: .custom)
+        
+        button.setImage(UIImage(named: "Logout Button"), for: .normal)
+        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        
+        return button
+    }()
+    
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Екатерина Новикова"
+        label.textColor = .ypWhite
+        label.font = .boldSystemFont(ofSize: 23)
+        
+        return label
+    }()
+    
+    private let loginLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "@ekaterina_nov"
+        label.textColor = .ypGray
+        label.font = .systemFont(ofSize: 13)
+        
+        return label
+    }()
+    
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Hello, world!"
+        label.textColor = .ypWhite
+        label.font = .systemFont(ofSize: 13)
+        
+        return label
+    }()
+    
+    // MARK: - Life cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupProfileViewLayout()
     }
+    
+    // MARK: - Private functions
     
     private func setupProfileViewLayout() {
         let mainStack = createVerticalStack()
@@ -27,9 +79,9 @@ final class ProfileViewController: UIViewController {
         vStack.spacing = 8
         
         vStack.addArrangedSubview(createHorizontalStack())
-        vStack.addArrangedSubview(createLabel(text: "Екатерина Новикова", color: .ypWhite, font: .boldSystemFont(ofSize: 23)))
-        vStack.addArrangedSubview(createLabel(text: "@ekaterina_nov", color: .ypGray, font: .systemFont(ofSize: 13)))
-        vStack.addArrangedSubview(createLabel(text: "Hello, world!", color: .ypWhite, font: .systemFont(ofSize: 13)))
+        vStack.addArrangedSubview(nameLabel)
+        vStack.addArrangedSubview(loginLabel)
+        vStack.addArrangedSubview(descriptionLabel)
         
         return vStack
     }
@@ -40,38 +92,9 @@ final class ProfileViewController: UIViewController {
         hStack.axis = .horizontal
         hStack.distribution = .equalSpacing
         
-        hStack.addArrangedSubview(createProfileImage())
-        hStack.addArrangedSubview(createLogoutButton())
+        hStack.addArrangedSubview(profileImage)
+        hStack.addArrangedSubview(logoutButton)
         
         return hStack
-    }
-    
-    private func createProfileImage() -> UIImageView {
-        let image = UIImageView(image: UIImage(named: "Profile Image"))
-        
-        NSLayoutConstraint.activate([
-            image.widthAnchor.constraint(equalToConstant: 70),
-            image.heightAnchor.constraint(equalTo: image.widthAnchor, multiplier: 1),
-        ])
-        return image
-    }
-    
-    private func createLogoutButton() -> UIButton {
-        let button = UIButton(type: .custom)
-        
-        button.setImage(UIImage(named: "Logout Button"), for: .normal)
-        button.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        
-        return button
-    }
-    
-    private func createLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
-        let label = UILabel()
-        
-        label.text = text
-        label.textColor = color
-        label.font = font
-        
-        return label
     }
 }
