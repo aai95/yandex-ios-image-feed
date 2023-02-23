@@ -295,6 +295,10 @@
                                     <action selector="didTapBackButton" destination="siK-zW-Ja4" eventType="touchUpInside" id="Ga0-5C-OEv"/>
                                 </connections>
                             </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-0O-4JD">
+                                <rect key="frame" x="0.0" y="95" width="375" height="4"/>
+                                <color key="progressTintColor" name="YP Black (iOS)"/>
+                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="CL9-8c-Iqc"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -305,10 +309,14 @@
                             <constraint firstItem="yBD-kj-m6p" firstAttribute="bottom" secondItem="1Bf-XA-mNv" secondAttribute="bottom" id="grY-iW-7SP"/>
                             <constraint firstItem="ca9-3G-gLG" firstAttribute="leading" secondItem="CL9-8c-Iqc" secondAttribute="leading" id="lio-wc-kwq"/>
                             <constraint firstItem="ca9-3G-gLG" firstAttribute="top" secondItem="CL9-8c-Iqc" secondAttribute="top" id="qez-aJ-UVd"/>
+                            <constraint firstItem="dKl-0O-4JD" firstAttribute="leading" secondItem="CL9-8c-Iqc" secondAttribute="leading" id="waO-l7-CWa"/>
+                            <constraint firstItem="dKl-0O-4JD" firstAttribute="top" secondItem="ca9-3G-gLG" secondAttribute="bottom" id="wdV-5V-vHK"/>
+                            <constraint firstItem="dKl-0O-4JD" firstAttribute="trailing" secondItem="CL9-8c-Iqc" secondAttribute="trailing" id="xph-Th-3sU"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Vbu-jZ-fYL"/>
                     <connections>
+                        <outlet property="progressView" destination="dKl-0O-4JD" id="NU2-zV-h0N"/>
                         <outlet property="webView" destination="yBD-kj-m6p" id="1RL-eN-Xm4"/>
                     </connections>
                 </viewController>
