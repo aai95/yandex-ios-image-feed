@@ -88,7 +88,7 @@
 		8E5BC9A629818F96001E022C /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				8EF6E22929A64DA800B70828 /* Auth */,
+				8EF6E22929A64DA800B70828 /* Authorization */,
 				8E5BC9C42986A721001E022C /* ImageList */,
 				8ED54F95298D472200B68937 /* Profile */,
 				8E98996929AA1ECD00478FEB /* Services */,
@@ -150,13 +150,13 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		8EF6E22929A64DA800B70828 /* Auth */ = {
+		8EF6E22929A64DA800B70828 /* Authorization */ = {
 			isa = PBXGroup;
 			children = (
 				8EF6E22A29A64DF200B70828 /* AuthViewController.swift */,
 				8EF6E22C29A65BF600B70828 /* WebViewViewController.swift */,
 			);
-			path = Auth;
+			path = Authorization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

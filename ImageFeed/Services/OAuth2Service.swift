@@ -15,10 +15,7 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     
-    func fetchOAuthToken(
-        _ code: String,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
+    func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         let request = authTokenRequest(code: code)
         let task = object(for: request) { [weak self] result in
             guard let self = self else {
@@ -44,8 +41,8 @@ final class OAuth2Service {
             + "&redirect_uri=\(RedirectURI)"
             + "&code=\(code)"
             + "&grant_type=authorization_code",
-            httpMethod: "POST",
-            baseURL: URL(string: "https://unsplash.com")!
+            method: "POST",
+            base: URL(string: "https://unsplash.com")!
         )
     }
 }
