@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8E04C4FC29AA2A7D00B3BDE6 /* URLRequestExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04C4FB29AA2A7D00B3BDE6 /* URLRequestExtension.swift */; };
 		8E04C4FE29AA2BFC00B3BDE6 /* URLSessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04C4FD29AA2BFC00B3BDE6 /* URLSessionExtension.swift */; };
+		8E04C50129AB753800B3BDE6 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E04C50029AB753800B3BDE6 /* SplashViewController.swift */; };
 		8E5BC9A829818F96001E022C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9A729818F96001E022C /* AppDelegate.swift */; };
 		8E5BC9AA29818F96001E022C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9A929818F96001E022C /* SceneDelegate.swift */; };
 		8E5BC9AC29818F96001E022C /* ImageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9AB29818F96001E022C /* ImageListViewController.swift */; };
@@ -29,6 +30,7 @@
 /* Begin PBXFileReference section */
 		8E04C4FB29AA2A7D00B3BDE6 /* URLRequestExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestExtension.swift; sourceTree = "<group>"; };
 		8E04C4FD29AA2BFC00B3BDE6 /* URLSessionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionExtension.swift; sourceTree = "<group>"; };
+		8E04C50029AB753800B3BDE6 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		8E5BC9A429818F96001E022C /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E5BC9A729818F96001E022C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E5BC9A929818F96001E022C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E04C4FF29AB74D400B3BDE6 /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				8E04C50029AB753800B3BDE6 /* SplashViewController.swift */,
+			);
+			path = Splash;
+			sourceTree = "<group>";
+		};
 		8E5BC99B29818F96001E022C = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +93,7 @@
 				8ED54F95298D472200B68937 /* Profile */,
 				8E98996929AA1ECD00478FEB /* Services */,
 				8E870E42298FE9220097782C /* SingleImage */,
+				8E04C4FF29AB74D400B3BDE6 /* Splash */,
 				8EF3E2B7299904390041F1BE /* Helpers */,
 				8E5BC9A729818F96001E022C /* AppDelegate.swift */,
 				8E5BC9A929818F96001E022C /* SceneDelegate.swift */,
@@ -228,6 +239,7 @@
 				8ED54F97298D47B600B68937 /* ProfileViewController.swift in Sources */,
 				8E04C4FC29AA2A7D00B3BDE6 /* URLRequestExtension.swift in Sources */,
 				8E04C4FE29AA2BFC00B3BDE6 /* URLSessionExtension.swift in Sources */,
+				8E04C50129AB753800B3BDE6 /* SplashViewController.swift in Sources */,
 				8E5BC9A829818F96001E022C /* AppDelegate.swift in Sources */,
 				8E870E44298FE9850097782C /* SingleImageViewController.swift in Sources */,
 				8E5BC9AA29818F96001E022C /* SceneDelegate.swift in Sources */,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="DdG-ob-F46">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="HcJ-E8-4aJ">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -61,12 +61,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UKM-hh-hjR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1286" y="326"/>
+            <point key="canvasLocation" x="1060" y="-660"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="z6k-MM-BxQ">
             <objects>
-                <tabBarController id="HEf-xd-UyC" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="HEf-xd-UyC" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QK6-aH-B0X">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -322,13 +322,41 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="inM-dR-EAM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-510" y="326"/>
+            <point key="canvasLocation" x="1847" y="-661"/>
+        </scene>
+        <!--Splash View Controller-->
+        <scene sceneID="51d-Xv-ADP">
+            <objects>
+                <viewController id="HcJ-E8-4aJ" customClass="SplashViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4ut-RL-4xY">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Launch Screen Logo" translatesAutoresizingMaskIntoConstraints="NO" id="buG-oc-weS">
+                                <rect key="frame" x="150" y="367" width="75" height="78"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="WpL-bz-MPF"/>
+                        <color key="backgroundColor" name="YP Black (iOS)"/>
+                        <constraints>
+                            <constraint firstItem="buG-oc-weS" firstAttribute="centerX" secondItem="4ut-RL-4xY" secondAttribute="centerX" id="erU-6W-KMH"/>
+                            <constraint firstItem="buG-oc-weS" firstAttribute="centerY" secondItem="4ut-RL-4xY" secondAttribute="centerY" id="wwp-kh-tHV"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <segue destination="DdG-ob-F46" kind="presentation" identifier="ShowAuthenticationScreen" id="q6X-SU-xue"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="frC-EI-Zbz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-529" y="-661"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Y7R-ih-73P">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="DdG-ob-F46" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" modalPresentationStyle="fullScreen" id="DdG-ob-F46" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="MGx-O0-lOi"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="jIZ-Cx-fk1">
                         <rect key="frame" x="0.0" y="47" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -340,7 +368,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x1H-KZ-V92" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2070" y="326"/>
+            <point key="canvasLocation" x="271" y="-661"/>
         </scene>
     </scenes>
     <resources>
@@ -350,6 +378,7 @@
         <image name="Black Back Button" width="9" height="15.666666984558105"/>
         <image name="Date Background" width="343" height="30"/>
         <image name="Image List Tab" width="20" height="22"/>
+        <image name="Launch Screen Logo" width="75" height="78"/>
         <image name="Like On Button" width="29.333333969116211" height="26"/>
         <image name="Profile Tab" width="24" height="24"/>
         <image name="Share Button" width="50" height="50"/>
