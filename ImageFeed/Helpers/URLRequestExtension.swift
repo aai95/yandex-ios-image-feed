@@ -2,8 +2,11 @@ import Foundation
 
 extension URLRequest {
     
-    static func createHTTPRequest(path: String, method: String, base: URL = DefaultBaseURL) -> URLRequest {
-        var request = URLRequest(url: URL(string: path, relativeTo: base)!)
+    static func makeHTTPRequest(path: String, method: String, base: URL = defaultBaseURL) -> URLRequest {
+        guard let url = URL(string: path, relativeTo: base) else {
+            fatalError("Failed to init URL with path \(path) relative to base \(base)")
+        }
+        var request = URLRequest(url: url)
         request.httpMethod = method
         return request
     }

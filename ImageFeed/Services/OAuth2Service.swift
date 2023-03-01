@@ -15,9 +15,11 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     
+    private init() {}
+    
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         let request = authTokenRequest(code: code)
-        let task = object(for: request) { [weak self] result in
+        let task = decodeStruct(from: request) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -34,11 +36,11 @@ final class OAuth2Service {
     }
     
     private func authTokenRequest(code: String) -> URLRequest {
-        return URLRequest.createHTTPRequest(
+        return URLRequest.makeHTTPRequest(
             path: "/oauth/token"
-            + "?client_id=\(AccessKey)"
-            + "&client_secret=\(SecretKey)"
-            + "&redirect_uri=\(RedirectURI)"
+            + "?client_id=\(accessKey)"
+            + "&client_secret=\(secretKey)"
+            + "&redirect_uri=\(redirectURI)"
             + "&code=\(code)"
             + "&grant_type=authorization_code",
             method: "POST",
@@ -63,11 +65,11 @@ extension OAuth2Service {
         }
     }
     
-    private func object(
-        for request: URLRequest,
+    private func decodeStruct(
+        from request: URLRequest,
         completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
     ) -> URLSessionTask {
-        return URLSession.shared.data(for: request) { (result: Result<Data, Error>) in
+        return URLSession.shared.makeTask(for: request) { (result: Result<Data, Error>) in
             let response = result.flatMap { data -> Result<OAuthTokenResponseBody, Error> in
                 Result { try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data) }
             }

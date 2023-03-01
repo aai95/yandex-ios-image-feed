@@ -8,7 +8,7 @@ enum NetworkError: Error {
 
 extension URLSession {
     
-    func data(for request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
+    func makeTask(for request: URLRequest, completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
         
         let completeInMain: (Result<Data, Error>) -> Void = { result in
             DispatchQueue.main.async {
@@ -32,7 +32,6 @@ extension URLSession {
                 completeInMain(.failure(NetworkError.urlSessionError))
             }
         }
-        task.resume()
         return task
     }
 }
