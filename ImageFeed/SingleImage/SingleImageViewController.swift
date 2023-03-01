@@ -26,7 +26,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction private func didTapBackButton() {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
     }
     
     @IBAction private func didTapShareButton(_ sender: UIButton) {
@@ -34,7 +34,7 @@ final class SingleImageViewController: UIViewController {
             activityItems: [image as Any],
             applicationActivities: nil
         )
-        present(controller, animated: true, completion: nil)
+        present(controller, animated: true)
     }
     
     private func rescaleAndCenterImageInScrollView() {
