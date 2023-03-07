@@ -13,11 +13,22 @@ final class OAuth2Service {
         }
     }
     
+    private var lastTask: URLSessionTask?
+    private var lastCode: String?
+    
     static let shared = OAuth2Service()
     
     private init() {}
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        
+        if lastCode == code {
+            return
+        }
+        lastTask?.cancel()
+        lastCode = code
+        
         let request = authTokenRequest(code: code)
         let task = decodeStruct(from: request) { [weak self] result in
             guard let self = self else {
@@ -28,10 +39,14 @@ final class OAuth2Service {
                 let authToken = body.accessToken
                 self.authToken = authToken
                 completion(.success(authToken))
+                self.lastTask = nil
             case .failure(let error):
                 completion(.failure(error))
+                self.lastCode = nil
             }
         }
+        
+        lastTask = task
         task.resume()
     }
     
