@@ -2,6 +2,8 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private let profileService = ProfileService.shared
+    
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
         
@@ -54,10 +56,21 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupProfileViewLayout()
+        updateProfileDetails()
     }
     
     // MARK: - Private functions
+    
+    private func updateProfileDetails() {
+        guard let profile = profileService.profile else  {
+            return
+        }
+        nameLabel.text = profile.name
+        loginLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
     
     private func setupProfileViewLayout() {
         let mainStack = createVerticalStack()

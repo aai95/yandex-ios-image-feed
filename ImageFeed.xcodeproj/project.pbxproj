@@ -19,6 +19,7 @@
 		8E5BC9C32986A6A7001E022C /* ImageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9C22986A6A7001E022C /* ImageListCell.swift */; };
 		8E811F0729B5FD18004306BE /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 8E811F0629B5FD18004306BE /* ProgressHUD */; };
 		8E811F0929B78F43004306BE /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E811F0829B78F43004306BE /* UIBlockingProgressHUD.swift */; };
+		8E811F0B29BA1252004306BE /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E811F0A29BA1252004306BE /* ProfileService.swift */; };
 		8E870E44298FE9850097782C /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E870E43298FE9850097782C /* SingleImageViewController.swift */; };
 		8E87418C29A2824800FD9F0D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E87418B29A2824800FD9F0D /* Constants.swift */; };
 		8E98996B29AA1F1800478FEB /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E98996A29AA1F1800478FEB /* OAuth2Service.swift */; };
@@ -43,6 +44,7 @@
 		8E5BC9B529818F97001E022C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8E5BC9C22986A6A7001E022C /* ImageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListCell.swift; sourceTree = "<group>"; };
 		8E811F0829B78F43004306BE /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
+		8E811F0A29BA1252004306BE /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		8E870E43298FE9850097782C /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		8E87418B29A2824800FD9F0D /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8E98996A29AA1F1800478FEB /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				8E98996A29AA1F1800478FEB /* OAuth2Service.swift */,
 				8E98996C29AA206D00478FEB /* OAuth2TokenStorage.swift */,
+				8E811F0A29BA1252004306BE /* ProfileService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				8EF3E2B9299904D20041F1BE /* UIColorExtension.swift in Sources */,
 				8E5BC9C32986A6A7001E022C /* ImageListCell.swift in Sources */,
 				8E98996B29AA1F1800478FEB /* OAuth2Service.swift in Sources */,
+				8E811F0B29BA1252004306BE /* ProfileService.swift in Sources */,
 				8ED54F97298D47B600B68937 /* ProfileViewController.swift in Sources */,
 				8E04C4FC29AA2A7D00B3BDE6 /* URLRequestExtension.swift in Sources */,
 				8E04C4FE29AA2BFC00B3BDE6 /* URLSessionExtension.swift in Sources */,
