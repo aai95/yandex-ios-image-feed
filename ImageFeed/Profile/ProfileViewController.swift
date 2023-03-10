@@ -81,17 +81,17 @@ final class ProfileViewController: UIViewController {
     // MARK: - Private functions
     
     private func updateProfileDetails() {
-        guard let profile = profileService.profile else  {
+        guard let profile = profileService.profile else {
             return
         }
         nameLabel.text = profile.name
-        loginLabel.text = profile.loginName
+        loginLabel.text = profile.login
         descriptionLabel.text = profile.bio
     }
     
     private func updateProfileImage() {
-        guard let profileImageURL = profileImageService.profileImageURL,
-              let url = URL(string: profileImageURL)
+        guard let link = profileImageService.profileImageLink,
+              let url = URL(string: link)
         else {
             return
         }

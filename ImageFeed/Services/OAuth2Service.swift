@@ -2,8 +2,10 @@ import Foundation
 
 final class OAuth2Service {
     
-    private let urlSession = URLSession.shared
+    static let shared = OAuth2Service()
+    
     private let storage = OAuth2TokenStorage.shared
+    private let session = URLSession.shared
     
     private (set) var authToken: String? {
         get {
@@ -17,8 +19,6 @@ final class OAuth2Service {
     private var lastTask: URLSessionTask?
     private var lastCode: String?
     
-    static let shared = OAuth2Service()
-    
     private init() {}
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
@@ -30,16 +30,16 @@ final class OAuth2Service {
         lastTask?.cancel()
         lastCode = code
         
-        let request = authTokenRequest(code: code)
-        let task = urlSession.decodeTask(from: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+        let request = makeTokenRequest(code)
+        let task = session.decodeTask(from: request) { [weak self] (result: Result<TokenBody, Error>) in
             guard let self = self else {
                 return
             }
             switch result {
             case .success(let body):
-                let authToken = body.accessToken
-                self.authToken = authToken
-                completion(.success(authToken))
+                let token = body.accessToken
+                self.authToken = token
+                completion(.success(token))
                 self.lastTask = nil
             case .failure(let error):
                 completion(.failure(error))
@@ -51,23 +51,23 @@ final class OAuth2Service {
         task.resume()
     }
     
-    private func authTokenRequest(code: String) -> URLRequest {
+    private func makeTokenRequest(_ code: String) -> URLRequest {
         return URLRequest.makeHTTPRequest(
+            base: URL(string: "https://unsplash.com")!,
             path: "/oauth/token"
             + "?client_id=\(accessKey)"
             + "&client_secret=\(secretKey)"
             + "&redirect_uri=\(redirectURI)"
             + "&code=\(code)"
             + "&grant_type=authorization_code",
-            method: "POST",
-            base: URL(string: "https://unsplash.com")!
+            method: .post
         )
     }
 }
 
 extension OAuth2Service {
     
-    private struct OAuthTokenResponseBody: Decodable {
+    private struct TokenBody: Decodable {
         let accessToken: String
         let tokenType: String
         let scope: String

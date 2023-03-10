@@ -2,13 +2,13 @@ import Foundation
 
 final class ProfileService {
     
-    private let urlSession = URLSession.shared
+    static let shared = ProfileService()
+    
+    private let session = URLSession.shared
     
     private(set) var profile: Profile?
     
     private var lastTask: URLSessionTask?
-    
-    static let shared = ProfileService()
     
     private init() {}
     
@@ -16,16 +16,14 @@ final class ProfileService {
         assert(Thread.isMainThread)
         lastTask?.cancel()
         
-        var request = URLRequest.makeHTTPRequest(path: "/me", method: "GET")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
-        let task = urlSession.decodeTask(from: request) { [weak self] (result: Result<ProfileBody, Error>) in
+        let request = makeProfileRequest(token)
+        let task = session.decodeTask(from: request) { [weak self] (result: Result<ProfileBody, Error>) in
             guard let self = self else {
                 return
             }
             switch result {
             case .success(let body):
-                let profile = self.convertProfile(body: body)
+                let profile = self.convertProfile(body)
                 self.profile = profile
                 completion(.success(profile))
                 self.lastTask = nil
@@ -38,11 +36,17 @@ final class ProfileService {
         task.resume()
     }
     
-    private func convertProfile(body: ProfileBody) -> Profile {
+    private func makeProfileRequest(_ token: String) -> URLRequest {
+        var request = URLRequest.makeHTTPRequest(path: "/me")
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
+    private func convertProfile(_ body: ProfileBody) -> Profile {
         return Profile(
-            userName: body.userName,
+            username: body.username,
             name: "\(body.firstName) \(body.lastName ?? "")",
-            loginName: "@\(body.userName)",
+            login: "@\(body.username)",
             bio: body.bio ?? ""
         )
     }
@@ -51,20 +55,20 @@ final class ProfileService {
 extension ProfileService {
     
     struct Profile {
-        let userName: String
+        let username: String
         let name: String
-        let loginName: String
+        let login: String
         let bio: String
     }
     
     private struct ProfileBody: Decodable {
-        let userName: String
+        let username: String
         let firstName: String
         let lastName: String?
         let bio: String?
         
         enum CodingKeys: String, CodingKey {
-            case userName = "username"
+            case username
             case firstName = "first_name"
             case lastName = "last_name"
             case bio
