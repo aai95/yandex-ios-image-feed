@@ -16,7 +16,7 @@ final class ProfileImageService {
         var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", method: "GET")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = decodeStruct(from: request) { [weak self] result in
+        let task = urlSession.decodeTask(from: request) { [weak self] (result: Result<UserBody, Error>) in
             guard let self = self else {
                 return
             }
@@ -55,18 +55,6 @@ extension ProfileImageService {
         
         enum CodingKeys: String, CodingKey {
             case profileImage = "profile_image"
-        }
-    }
-    
-    private func decodeStruct(
-        from request: URLRequest,
-        completion: @escaping (Result<UserBody, Error>) -> Void
-    ) -> URLSessionTask {
-        return urlSession.makeTask(for: request) { (result: Result<Data, Error>) in
-            let response = result.flatMap { data -> Result<UserBody, Error> in
-                return Result { try JSONDecoder().decode(UserBody.self, from: data) }
-            }
-            completion(response)
         }
     }
 }

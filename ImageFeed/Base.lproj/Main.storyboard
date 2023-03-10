@@ -295,7 +295,7 @@
                                     <action selector="didTapBackButton" destination="siK-zW-Ja4" eventType="touchUpInside" id="Ga0-5C-OEv"/>
                                 </connections>
                             </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-0O-4JD">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.1" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-0O-4JD">
                                 <rect key="frame" x="0.0" y="95" width="375" height="4"/>
                                 <color key="progressTintColor" name="YP Black (iOS)"/>
                             </progressView>

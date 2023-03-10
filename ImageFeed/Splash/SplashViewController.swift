@@ -71,8 +71,9 @@ extension SplashViewController: AuthViewControllerDelegate {
             switch result {
             case .success(let token):
                 self.fetchProfile(token)
-            case .failure(let error):
+            case .failure(_):
                 UIBlockingProgressHUD.dismiss()
+                self.presentNetworkErrorAlert()
             }
         }
     }
@@ -87,9 +88,24 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self.profileImageService.fetchProfileImageURL(token, username: profile.userName) { _ in }
                 UIBlockingProgressHUD.dismiss()
                 self.switchToTabBarController()
-            case .failure(let error):
+            case .failure(_):
                 UIBlockingProgressHUD.dismiss()
+                self.presentNetworkErrorAlert()
             }
         }
+    }
+    
+    private func presentNetworkErrorAlert() {
+        let controller = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let action = UIAlertAction(
+            title: "Ок",
+            style: .default
+        )
+        controller.addAction(action)
+        present(controller, animated: true)
     }
 }

@@ -2,13 +2,6 @@ import Foundation
 
 final class ProfileService {
     
-    struct Profile {
-        let userName: String
-        let name: String
-        let loginName: String
-        let bio: String
-    }
-    
     private let urlSession = URLSession.shared
     
     private(set) var profile: Profile?
@@ -21,7 +14,7 @@ final class ProfileService {
         var request = URLRequest.makeHTTPRequest(path: "/me", method: "GET")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = decodeStruct(from: request) { [weak self] result in
+        let task = urlSession.decodeTask(from: request) { [weak self] (result: Result<ProfileBody, Error>) in
             guard let self = self else {
                 return
             }
@@ -49,6 +42,13 @@ final class ProfileService {
 
 extension ProfileService {
     
+    struct Profile {
+        let userName: String
+        let name: String
+        let loginName: String
+        let bio: String
+    }
+    
     private struct ProfileBody: Decodable {
         let userName: String
         let firstName: String
@@ -60,18 +60,6 @@ extension ProfileService {
             case firstName = "first_name"
             case lastName = "last_name"
             case bio
-        }
-    }
-    
-    private func decodeStruct(
-        from request: URLRequest,
-        completion: @escaping (Result<ProfileBody, Error>) -> Void
-    ) -> URLSessionTask {
-        return urlSession.makeTask(for: request) { (result: Result<Data, Error>) in
-            let response = result.flatMap { data -> Result<ProfileBody, Error> in
-                return Result { try JSONDecoder().decode(ProfileBody.self, from: data) }
-            }
-            completion(response)
         }
     }
 }

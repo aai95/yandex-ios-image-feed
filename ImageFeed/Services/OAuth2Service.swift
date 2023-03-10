@@ -2,6 +2,7 @@ import Foundation
 
 final class OAuth2Service {
     
+    private let urlSession = URLSession.shared
     private let storage = OAuth2TokenStorage()
     
     private (set) var authToken: String? {
@@ -30,7 +31,7 @@ final class OAuth2Service {
         lastCode = code
         
         let request = authTokenRequest(code: code)
-        let task = decodeStruct(from: request) { [weak self] result in
+        let task = urlSession.decodeTask(from: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             guard let self = self else {
                 return
             }
@@ -77,18 +78,6 @@ extension OAuth2Service {
             case tokenType = "token_type"
             case scope
             case createdAt = "created_at"
-        }
-    }
-    
-    private func decodeStruct(
-        from request: URLRequest,
-        completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
-    ) -> URLSessionTask {
-        return URLSession.shared.makeTask(for: request) { (result: Result<Data, Error>) in
-            let response = result.flatMap { data -> Result<OAuthTokenResponseBody, Error> in
-                Result { try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data) }
-            }
-            completion(response)
         }
     }
 }
