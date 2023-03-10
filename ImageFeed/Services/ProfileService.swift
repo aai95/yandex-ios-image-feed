@@ -6,11 +6,16 @@ final class ProfileService {
     
     private(set) var profile: Profile?
     
+    private var lastTask: URLSessionTask?
+    
     static let shared = ProfileService()
     
     private init() {}
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        lastTask?.cancel()
+        
         var request = URLRequest.makeHTTPRequest(path: "/me", method: "GET")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
@@ -23,10 +28,13 @@ final class ProfileService {
                 let profile = self.convertProfile(body: body)
                 self.profile = profile
                 completion(.success(profile))
+                self.lastTask = nil
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+        
+        lastTask = task
         task.resume()
     }
     

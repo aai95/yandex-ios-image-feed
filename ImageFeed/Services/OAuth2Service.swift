@@ -3,7 +3,7 @@ import Foundation
 final class OAuth2Service {
     
     private let urlSession = URLSession.shared
-    private let storage = OAuth2TokenStorage()
+    private let storage = OAuth2TokenStorage.shared
     
     private (set) var authToken: String? {
         get {

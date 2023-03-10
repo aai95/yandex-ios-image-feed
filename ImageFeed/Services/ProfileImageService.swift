@@ -6,6 +6,8 @@ final class ProfileImageService {
     
     private (set) var profileImageURL: String?
     
+    private var lastTask: URLSessionTask?
+    
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
     static let shared = ProfileImageService()
@@ -13,6 +15,9 @@ final class ProfileImageService {
     private init() {}
     
     func fetchProfileImageURL(_ token: String, username: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        lastTask?.cancel()
+        
         var request = URLRequest.makeHTTPRequest(path: "/users/\(username)", method: "GET")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
@@ -25,17 +30,19 @@ final class ProfileImageService {
                 let url = body.profileImage.small
                 self.profileImageURL = url
                 completion(.success(url))
+                self.lastTask = nil
                 
                 NotificationCenter.default.post(
                     name: ProfileImageService.didChangeNotification,
                     object: self,
                     userInfo: ["URL": self.profileImageURL as Any]
                 )
-                
             case .failure(let error):
                 completion(.failure(error))
             }
         }
+        
+        lastTask = task
         task.resume()
     }
 }
