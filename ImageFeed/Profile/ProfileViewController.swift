@@ -3,6 +3,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
@@ -52,6 +53,8 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     // MARK: - Life cycle
     
     override func viewDidLoad() {
@@ -59,6 +62,20 @@ final class ProfileViewController: UIViewController {
         
         setupProfileViewLayout()
         updateProfileDetails()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.updateProfileImage()
+            }
+        
+        updateProfileImage()
     }
     
     // MARK: - Private functions
@@ -71,6 +88,16 @@ final class ProfileViewController: UIViewController {
         loginLabel.text = profile.loginName
         descriptionLabel.text = profile.bio
     }
+    
+    private func updateProfileImage() {
+        guard let profileImageURL = profileImageService.profileImageURL,
+              let url = URL(string: profileImageURL)
+        else {
+            return
+        }
+    }
+    
+    // MARK: - Private layout functions
     
     private func setupProfileViewLayout() {
         let mainStack = createVerticalStack()
