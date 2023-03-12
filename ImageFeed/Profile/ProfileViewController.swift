@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
@@ -90,10 +91,13 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateProfileImage() {
-        guard let link = profileImageService.profileImageLink,
-              let url = URL(string: link)
-        else {
-            return
+        if let link = profileImageService.profileImageLink,
+           let url = URL(string: link)
+        {
+            profileImage.kf.setImage(
+                with: url,
+                options: [.processor(RoundCornerImageProcessor(cornerRadius: 35))]
+            )
         }
     }
     
