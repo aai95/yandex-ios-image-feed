@@ -9,10 +9,10 @@ final class OAuth2Service {
     
     private (set) var authToken: String? {
         get {
-            return storage.token
+            return storage.authToken
         }
         set {
-            storage.token = newValue
+            storage.authToken = newValue
         }
     }
     
