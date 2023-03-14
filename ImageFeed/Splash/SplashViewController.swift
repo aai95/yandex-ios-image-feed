@@ -2,8 +2,6 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    private let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
-    
     private let oauth2Service = OAuth2Service.shared
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
@@ -14,13 +12,18 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Life cycle
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        makeSplashViewLayout()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         if let token = oauth2Service.authToken {
             fetchProfile(token)
         } else {
-            performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
+            switchToAuthViewController()
         }
     }
     
@@ -29,29 +32,27 @@ final class SplashViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
     }
     
-    // MARK: - Navigation functions
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showAuthenticationScreenSegueIdentifier {
-            guard let navigationController = segue.destination as? UINavigationController,
-                  let authController = navigationController.viewControllers[0] as? AuthViewController
-            else {
-                fatalError("Failed to prepare for \(showAuthenticationScreenSegueIdentifier)")
-            }
-            authController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
+    private func makeSplashViewLayout() {
+        let image = UIImageView(image: UIImage(named: "Launch Screen Logo"))
+        
+        view.addSubview(image)
+        view.backgroundColor = UIColor.ypBlack
+        
+        image.translatesAutoresizingMaskIntoConstraints = false
+        
+        image.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        image.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
     
-    private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            fatalError("Invalid configuration")
-        }
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
+    private func switchToAuthViewController() {
+        let viewController = UIStoryboard(name: "Main", bundle: .main)
+            .instantiateViewController(withIdentifier: "AuthViewController")
         
-        window.rootViewController = tabBarController
+        guard let authController = viewController as? AuthViewController else {
+            fatalError("Failed to cast UIViewController as AuthViewController")
+        }
+        authController.delegate = self
+        present(authController, animated: true)
     }
 }
 
@@ -94,12 +95,22 @@ private extension SplashViewController {
             case .success(let profile):
                 self.profileImageService.fetchProfileImageLink(token, for: profile.username) { _ in }
                 UIBlockingProgressHUD.dismiss()
-                self.switchToTabBarController()
+                self.switchToTabBarViewController()
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
                 self.presentNetworkErrorAlert()
             }
         }
+    }
+    
+    func switchToTabBarViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            fatalError("There is no UIWindow in UIApplication")
+        }
+        let viewController = UIStoryboard(name: "Main", bundle: .main)
+            .instantiateViewController(withIdentifier: "TabBarViewController")
+        
+        window.rootViewController = viewController
     }
     
     func presentNetworkErrorAlert() {

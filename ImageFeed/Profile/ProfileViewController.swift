@@ -61,7 +61,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupProfileViewLayout()
+        makeProfileViewLayout()
         updateProfileDetails()
         
         profileImageServiceObserver = NotificationCenter.default
@@ -103,11 +103,13 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - Private layout functions
     
-    private func setupProfileViewLayout() {
+    private func makeProfileViewLayout() {
         let mainStack = createVerticalStack()
         
-        mainStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(mainStack)
+        view.backgroundColor = UIColor.ypBlack
+        
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             mainStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
