@@ -6,6 +6,8 @@ final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
+    private var isAuthAttemptInProgress = false
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
@@ -22,6 +24,8 @@ final class SplashViewController: UIViewController {
         
         if let token = oauth2Service.authToken {
             fetchProfile(token)
+        } else if isAuthAttemptInProgress {
+            return
         } else {
             switchToAuthViewController()
         }
@@ -54,6 +58,8 @@ final class SplashViewController: UIViewController {
 extension SplashViewController: AuthViewControllerDelegate {
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
+        isAuthAttemptInProgress = true
+        
         dismiss(animated: true) { [weak self] in
             guard let self = self else {
                 return
@@ -109,6 +115,8 @@ private extension SplashViewController {
     }
     
     func presentNetworkErrorAlert() {
+        isAuthAttemptInProgress = false
+        
         let controller = UIAlertController(
             title: "Что-то пошло не так",
             message: "Не удалось войти в систему",
