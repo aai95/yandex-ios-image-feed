@@ -1,6 +1,10 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    
+    private let profileService = ProfileService.shared
+    private let profileImageService = ProfileImageService.shared
     
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
@@ -50,20 +54,73 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     // MARK: - Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupProfileViewLayout()
+        
+        makeProfileViewLayout()
+        updateProfileDetails()
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.updateProfileImage()
+            }
+        
+        updateProfileImage()
     }
     
     // MARK: - Private functions
     
-    private func setupProfileViewLayout() {
+    private func updateProfileDetails() {
+        guard let profile = profileService.profile else {
+            return
+        }
+        nameLabel.text = profile.name
+        loginLabel.text = profile.login
+        descriptionLabel.text = profile.bio
+    }
+    
+    private func updateProfileImage() {
+        guard let link = profileImageService.profileImageLink,
+              let url = URL(string: link)
+        else {
+            return
+        }
+        profileImage.kf.indicatorType = .activity
+        (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
+        
+        profileImage.kf.setImage(
+            with: url,
+            options: [
+                .processor(RoundCornerImageProcessor(cornerRadius: 35)),
+                .cacheSerializer(FormatIndicatedCacheSerializer.png)
+            ]
+        )
+    }
+    
+    // MARK: - Private layout functions
+    
+    private func makeProfileViewLayout() {
         let mainStack = createVerticalStack()
         
-        mainStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(mainStack)
+        view.backgroundColor = UIColor.ypBlack
+        
+        mainStack.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             mainStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),

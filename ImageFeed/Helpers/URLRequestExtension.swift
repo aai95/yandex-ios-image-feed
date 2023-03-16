@@ -1,13 +1,22 @@
 import Foundation
 
+enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+}
+
 extension URLRequest {
     
-    static func makeHTTPRequest(path: String, method: String, base: URL = defaultBaseURL) -> URLRequest {
+    static func makeHTTPRequest(
+        base: URL = baseAPIURL,
+        path: String,
+        method: HTTPMethod = .get
+    ) -> URLRequest {
         guard let url = URL(string: path, relativeTo: base) else {
-            fatalError("Failed to init URL with path \(path) relative to base \(base)")
+            preconditionFailure("Failed to init URL with path \(path) relative to base \(base)")
         }
         var request = URLRequest(url: url)
-        request.httpMethod = method
+        request.httpMethod = method.rawValue
         return request
     }
 }
