@@ -95,14 +95,21 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateProfileImage() {
-        if let link = profileImageService.profileImageLink,
-           let url = URL(string: link)
-        {
-            profileImage.kf.setImage(
-                with: url,
-                options: [.processor(RoundCornerImageProcessor(cornerRadius: 35))]
-            )
+        guard let link = profileImageService.profileImageLink,
+              let url = URL(string: link)
+        else {
+            return
         }
+        profileImage.kf.indicatorType = .activity
+        (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
+        
+        profileImage.kf.setImage(
+            with: url,
+            options: [
+                .processor(RoundCornerImageProcessor(cornerRadius: 35)),
+                .cacheSerializer(FormatIndicatedCacheSerializer.png)
+            ]
+        )
     }
     
     // MARK: - Private layout functions
