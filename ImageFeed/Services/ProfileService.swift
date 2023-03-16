@@ -13,7 +13,8 @@ final class ProfileService {
     private init() {}
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread)
+        assert(Thread.isMainThread, "This code must be executed on the main thread")
+        
         lastTask?.cancel()
         
         let request = makeProfileRequest(token)

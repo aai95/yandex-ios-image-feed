@@ -8,12 +8,12 @@ enum HTTPMethod: String {
 extension URLRequest {
     
     static func makeHTTPRequest(
-        base: URL = defaultBaseURL,
+        base: URL = baseAPIURL,
         path: String,
         method: HTTPMethod = .get
     ) -> URLRequest {
         guard let url = URL(string: path, relativeTo: base) else {
-            fatalError("Failed to init URL with path \(path) relative to base \(base)")
+            preconditionFailure("Failed to init URL with path \(path) relative to base \(base)")
         }
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue

@@ -22,7 +22,7 @@ final class OAuth2Service {
     private init() {}
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread)
+        assert(Thread.isMainThread, "This code must be executed on the main thread")
         
         if lastCode == code {
             return
@@ -53,7 +53,7 @@ final class OAuth2Service {
     
     private func makeTokenRequest(_ code: String) -> URLRequest {
         return URLRequest.makeHTTPRequest(
-            base: URL(string: "https://unsplash.com")!,
+            base: baseURL,
             path: "/oauth/token"
             + "?client_id=\(accessKey)"
             + "&client_secret=\(secretKey)"

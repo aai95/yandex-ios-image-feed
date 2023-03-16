@@ -10,10 +10,14 @@ final class AuthViewController: UIViewController {
     
     weak var delegate: AuthViewControllerDelegate?
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
             guard let webController = segue.destination as? WebViewViewController else {
-                fatalError("Failed to prepare for \(showWebViewSegueIdentifier)")
+                preconditionFailure("Failed to prepare for segue \(showWebViewSegueIdentifier)")
             }
             webController.delegate = self
         } else {

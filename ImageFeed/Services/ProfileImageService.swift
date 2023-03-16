@@ -14,7 +14,8 @@ final class ProfileImageService {
     private init() {}
     
     func fetchProfileImageLink(_ token: String, for username: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread)
+        assert(Thread.isMainThread, "This code must be executed on the main thread")
+        
         lastTask?.cancel()
         
         let request = makeUserRequest(token, for: username)

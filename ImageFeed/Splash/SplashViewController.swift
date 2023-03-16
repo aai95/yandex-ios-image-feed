@@ -27,11 +27,6 @@ final class SplashViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setNeedsStatusBarAppearanceUpdate()
-    }
-    
     private func makeSplashViewLayout() {
         let image = UIImageView(image: UIImage(named: "Launch Screen Logo"))
         
@@ -49,7 +44,7 @@ final class SplashViewController: UIViewController {
             .instantiateViewController(withIdentifier: "AuthViewController")
         
         guard let authController = viewController as? AuthViewController else {
-            fatalError("Failed to cast UIViewController as AuthViewController")
+            preconditionFailure("Failed to cast UIViewController as AuthViewController")
         }
         authController.delegate = self
         present(authController, animated: true)
@@ -105,7 +100,7 @@ private extension SplashViewController {
     
     func switchToTabBarViewController() {
         guard let window = UIApplication.shared.windows.first else {
-            fatalError("There is no UIWindow in UIApplication")
+            preconditionFailure("Failed to find UIWindow in UIApplication")
         }
         let viewController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
