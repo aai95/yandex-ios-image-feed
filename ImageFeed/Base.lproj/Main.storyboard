@@ -63,10 +63,10 @@
             </objects>
             <point key="canvasLocation" x="1060" y="-660"/>
         </scene>
-        <!--Tab Bar View Controller-->
+        <!--Tab Bar Controller-->
         <scene sceneID="z6k-MM-BxQ">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="HEf-xd-UyC" customClass="TabBarViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarController" id="HEf-xd-UyC" customClass="TabBarController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="QK6-aH-B0X">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -275,7 +275,7 @@
                                     <action selector="didTapBackButton" destination="siK-zW-Ja4" eventType="touchUpInside" id="Ga0-5C-OEv"/>
                                 </connections>
                             </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.1" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-0O-4JD">
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.10000000000000001" translatesAutoresizingMaskIntoConstraints="NO" id="dKl-0O-4JD">
                                 <rect key="frame" x="0.0" y="95" width="375" height="4"/>
                                 <color key="progressTintColor" name="YP Black (iOS)"/>
                             </progressView>

@@ -96,7 +96,7 @@ private extension SplashViewController {
             case .success(let profile):
                 self.profileImageService.fetchProfileImageLink(token, for: profile.username) { _ in }
                 UIBlockingProgressHUD.dismiss()
-                self.switchToTabBarViewController()
+                self.switchToTabBarController()
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
                 self.presentNetworkErrorAlert()
@@ -104,12 +104,12 @@ private extension SplashViewController {
         }
     }
     
-    func switchToTabBarViewController() {
+    func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else {
             preconditionFailure("Failed to find UIWindow in UIApplication")
         }
         let viewController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
+            .instantiateViewController(withIdentifier: "TabBarController")
         
         window.rootViewController = viewController
     }
@@ -123,10 +123,12 @@ private extension SplashViewController {
             preferredStyle: .alert
         )
         let action = UIAlertAction(
-            title: "Ок",
+            title: "OK",
             style: .default
         )
         controller.addAction(action)
+        controller.preferredAction = action
+        
         present(controller, animated: true)
     }
 }

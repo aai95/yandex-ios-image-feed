@@ -1,6 +1,6 @@
 import UIKit
 
-final class TabBarViewController: UITabBarController {
+final class TabBarController: UITabBarController {
     
     override func awakeFromNib() {
         super.awakeFromNib()
