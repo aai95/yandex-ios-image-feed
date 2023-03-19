@@ -11,23 +11,23 @@ final class ImageListService {
     
     private (set) var photos: [Photo] = []
     
-    private var lastPage: Int?
-    private var lastTask: URLSessionTask? // TODO: Maybe currentTask?
+    private var currentTask: URLSessionTask?
+    private var lastLoadedPage: Int?
     
     private init() {}
     
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread, "This code must be executed on the main thread")
         
-        guard lastTask == nil else {
+        guard currentTask == nil else {
             return
         }
         guard let token = storage.authToken else {
             return
         }
-        let nextPage = lastPage == nil ? 1 : lastPage! + 1
+        let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
+        let request = makePhotosRequest(with: token, for: nextPage)
         
-        let request = makePhotosRequest(token, for: nextPage)
         let task = session.decodeTask(from: request) { [weak self] (result: Result<[PhotoBody], Error>) in
             guard let self = self else {
                 return
@@ -36,8 +36,9 @@ final class ImageListService {
             case .success(let bodies):
                 assert(Thread.isMainThread, "This code must be executed on the main thread")
                 
-                self.photos.append(contentsOf: self.convertPhotos(bodies))
-                self.lastTask = nil
+                self.photos.append(contentsOf: self.convertPhotos(from: bodies))
+                self.currentTask = nil
+                self.lastLoadedPage = nextPage
                 
                 NotificationCenter.default.post(
                     name: ImageListService.didChangeNotification,
@@ -49,11 +50,11 @@ final class ImageListService {
             }
         }
         
-        lastTask = task
+        currentTask = task
         task.resume()
     }
     
-    private func makePhotosRequest(_ token: String, for page: Int) -> URLRequest { // TODO: Maybe with token for page?
+    private func makePhotosRequest(with token: String, for page: Int) -> URLRequest {
         var request = URLRequest.makeHTTPRequest(
             path: "/photos"
             + "?page=\(page)"
@@ -63,7 +64,7 @@ final class ImageListService {
         return request
     }
     
-    private func convertPhotos(_ bodies: [PhotoBody]) -> [Photo] { // TODO: Maybe from bodies?
+    private func convertPhotos(from bodies: [PhotoBody]) -> [Photo] {
         var photos = [Photo]()
         
         for body in bodies {

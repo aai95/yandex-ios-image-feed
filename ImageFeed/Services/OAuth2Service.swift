@@ -16,21 +16,21 @@ final class OAuth2Service {
         }
     }
     
-    private var lastTask: URLSessionTask?
-    private var lastCode: String?
+    private var currentTask: URLSessionTask?
+    private var lastUsedCode: String?
     
     private init() {}
     
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread, "This code must be executed on the main thread")
         
-        if lastCode == code {
+        guard lastUsedCode != code else {
             return
         }
-        lastTask?.cancel()
-        lastCode = code
+        currentTask?.cancel()
+        lastUsedCode = code
         
-        let request = makeTokenRequest(code)
+        let request = makeTokenRequest(for: code)
         let task = session.decodeTask(from: request) { [weak self] (result: Result<TokenBody, Error>) in
             guard let self = self else {
                 return
@@ -40,18 +40,18 @@ final class OAuth2Service {
                 let token = body.accessToken
                 self.authToken = token
                 completion(.success(token))
-                self.lastTask = nil
+                self.currentTask = nil
             case .failure(let error):
                 completion(.failure(error))
-                self.lastCode = nil
+                self.lastUsedCode = nil
             }
         }
         
-        lastTask = task
+        currentTask = task
         task.resume()
     }
     
-    private func makeTokenRequest(_ code: String) -> URLRequest {
+    private func makeTokenRequest(for code: String) -> URLRequest {
         return URLRequest.makeHTTPRequest(
             base: baseURL,
             path: "/oauth/token"

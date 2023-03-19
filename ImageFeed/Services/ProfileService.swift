@@ -8,42 +8,41 @@ final class ProfileService {
     
     private(set) var profile: Profile?
     
-    private var lastTask: URLSessionTask?
+    private var currentTask: URLSessionTask?
     
     private init() {}
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread, "This code must be executed on the main thread")
+        currentTask?.cancel()
         
-        lastTask?.cancel()
-        
-        let request = makeProfileRequest(token)
+        let request = makeProfileRequest(with: token)
         let task = session.decodeTask(from: request) { [weak self] (result: Result<ProfileBody, Error>) in
             guard let self = self else {
                 return
             }
             switch result {
             case .success(let body):
-                let profile = self.convertProfile(body)
+                let profile = self.convertProfile(from: body)
                 self.profile = profile
                 completion(.success(profile))
-                self.lastTask = nil
+                self.currentTask = nil
             case .failure(let error):
                 completion(.failure(error))
             }
         }
         
-        lastTask = task
+        currentTask = task
         task.resume()
     }
     
-    private func makeProfileRequest(_ token: String) -> URLRequest {
+    private func makeProfileRequest(with token: String) -> URLRequest {
         var request = URLRequest.makeHTTPRequest(path: "/me")
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
     }
     
-    private func convertProfile(_ body: ProfileBody) -> Profile {
+    private func convertProfile(from body: ProfileBody) -> Profile {
         return Profile(
             username: body.username,
             name: "\(body.firstName) \(body.lastName ?? "")",
