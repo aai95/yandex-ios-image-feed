@@ -7,4 +7,9 @@ final class ImageListCell: UITableViewCell {
     @IBOutlet var photoImage: UIImageView!
     @IBOutlet var likeButton: UIButton!
     @IBOutlet var dateLabel: UILabel!
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        photoImage.kf.cancelDownloadTask()
+    }
 }

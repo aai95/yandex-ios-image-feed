@@ -83,17 +83,17 @@ final class ImageListService {
     }
 }
 
+struct Photo {
+    let id: String
+    let createdAt: Date?
+    let size: CGSize
+    let isLiked: Bool
+    let description: String?
+    let fullSizeLink: String
+    let thumbSizeLink: String
+}
+
 extension ImageListService {
-    
-    struct Photo {
-        let id: String
-        let createdAt: Date?
-        let size: CGSize
-        let isLiked: Bool
-        let description: String?
-        let fullSizeLink: String
-        let thumbSizeLink: String
-    }
     
     private struct PhotoBody: Decodable {
         let id: String

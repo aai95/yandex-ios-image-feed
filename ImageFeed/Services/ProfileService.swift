@@ -52,14 +52,14 @@ final class ProfileService {
     }
 }
 
+struct Profile {
+    let username: String
+    let name: String
+    let login: String
+    let bio: String
+}
+
 extension ProfileService {
-    
-    struct Profile {
-        let username: String
-        let name: String
-        let login: String
-        let bio: String
-    }
     
     private struct ProfileBody: Decodable {
         let username: String
