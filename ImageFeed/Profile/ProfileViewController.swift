@@ -9,6 +9,8 @@ final class ProfileViewController: UIViewController {
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
         
+        image.layer.masksToBounds = true
+        image.layer.cornerRadius = 35
         image.widthAnchor.constraint(equalToConstant: 70).isActive = true
         image.heightAnchor.constraint(equalTo: image.widthAnchor).isActive = true
         
@@ -50,6 +52,7 @@ final class ProfileViewController: UIViewController {
         label.text = "Hello, world!"
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 13)
+        label.numberOfLines = 0
         
         return label
     }()
@@ -102,14 +105,7 @@ final class ProfileViewController: UIViewController {
         }
         profileImage.kf.indicatorType = .activity
         (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
-        
-        profileImage.kf.setImage(
-            with: url,
-            options: [
-                .processor(RoundCornerImageProcessor(cornerRadius: 35)),
-                .cacheSerializer(FormatIndicatedCacheSerializer.png)
-            ]
-        )
+        profileImage.kf.setImage(with: url)
     }
     
     // MARK: - Private layout functions

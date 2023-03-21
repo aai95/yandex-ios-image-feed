@@ -24,7 +24,7 @@ final class ProfileImageService {
             }
             switch result {
             case .success(let body):
-                let link = body.profileImage.small
+                let link = body.profileImage.medium
                 self.profileImageLink = link
                 completion(.success(link))
                 self.currentTask = nil
@@ -62,9 +62,13 @@ extension ProfileImageService {
     
     private struct ProfileImageBody: Decodable {
         let small: String
+        let medium: String
+        let large: String
         
         enum CodingKeys: String, CodingKey {
             case small
+            case medium
+            case large
         }
     }
 }
