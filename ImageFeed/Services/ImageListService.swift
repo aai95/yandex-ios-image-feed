@@ -83,6 +83,63 @@ final class ImageListService {
     }
 }
 
+extension ImageListService {
+    
+    func changeLike(photoID: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        assert(Thread.isMainThread, "This code must be executed on the main thread")
+        
+        guard let token = storage.authToken else {
+            return
+        }
+        let request = makeLikeRequest(with: token, for: photoID, set: isLike)
+        
+        let task = session.decodeTask(from: request) { [weak self] (result: Result<EmptyBody, Error>) in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(_):
+                assert(Thread.isMainThread, "This code must be executed on the main thread")
+                
+                guard let index = self.photos.firstIndex(where: { $0.id == photoID }) else {
+                    return
+                }
+                let oldPhoto = self.photos[index]
+                let newPhoto = self.invertLike(in: oldPhoto)
+                self.photos[index] = newPhoto
+                
+                completion(.success(Void()))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    private func makeLikeRequest(with token: String, for photoID: String, set isLike: Bool) -> URLRequest {
+        var request = URLRequest.makeHTTPRequest(
+            path: "/photos/\(photoID)/like",
+            method: isLike ? .post : .delete
+        )
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        return request
+    }
+    
+    private func invertLike(in photo: Photo) -> Photo {
+        return Photo(
+            id: photo.id,
+            createdAt: photo.createdAt,
+            size: photo.size,
+            isLiked: !photo.isLiked,
+            description: photo.description,
+            fullSizeLink: photo.fullSizeLink,
+            thumbSizeLink: photo.thumbSizeLink
+        )
+    }
+}
+
 struct Photo {
     let id: String
     let createdAt: Date?
@@ -94,6 +151,8 @@ struct Photo {
 }
 
 extension ImageListService {
+    
+    private struct EmptyBody: Decodable {}
     
     private struct PhotoBody: Decodable {
         let id: String

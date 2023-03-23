@@ -67,11 +67,11 @@ class ImageListViewController: UIViewController {
     }
     
     private func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
-        guard let photoURL = URL(string: photos[indexPath.row].thumbSizeLink) else {
+        let photo = photos[indexPath.row]
+        guard let photoURL = URL(string: photo.thumbSizeLink) else {
             return
         }
-        let isLiked = indexPath.row % 2 == 0
-        let likeImage = isLiked ? UIImage(named: "Like On Button") : UIImage(named: "Like Off Button")
+        let likeImage = photo.isLiked ? UIImage(named: "Like On Button") : UIImage(named: "Like Off Button")
         
         cell.photoImage.kf.setImage(
             with: photoURL,
@@ -84,6 +84,7 @@ class ImageListViewController: UIViewController {
         }
         cell.likeButton.setImage(likeImage, for: .normal)
         cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.delegate = self
     }
 }
 
@@ -129,5 +130,48 @@ extension ImageListViewController: UITableViewDelegate {
         let cellHeight = scale * photoSize.height + insets.top + insets.bottom
         
         return cellHeight
+    }
+}
+
+extension ImageListViewController: ImageListCellDelegate {
+    
+    func imageListCellDidTapLike(_ cell: ImageListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else {
+            return
+        }
+        let photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show()
+        imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(_):
+                self.photos = self.imageListService.photos
+                let changedPhoto = self.photos[indexPath.row]
+                cell.putLikeOnPhoto(isLiked: changedPhoto.isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(_):
+                UIBlockingProgressHUD.dismiss()
+                self.presentNetworkErrorAlert()
+            }
+        }
+    }
+    
+    private func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
+        let controller = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось выполнить операцию",
+            preferredStyle: .alert
+        )
+        let action = UIAlertAction(
+            title: "OK",
+            style: .default
+        )
+        controller.addAction(action)
+        controller.preferredAction = action
+        
+        present(controller, animated: true)
     }
 }
