@@ -44,7 +44,7 @@ class ImageListViewController: UIViewController {
         if segue.identifier == showSingleImageSegueIdentifier {
             let controller = segue.destination as! SingleImageViewController
             let indexPath = sender as! IndexPath
-            controller.image = UIImage(named: "Photo Placeholder")
+            controller.imageLink = photos[indexPath.row].fullSizeLink
         } else {
             super.prepare(for: segue, sender: sender)
         }
