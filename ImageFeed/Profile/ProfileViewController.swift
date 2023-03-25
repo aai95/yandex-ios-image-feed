@@ -5,6 +5,7 @@ final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
@@ -22,6 +23,7 @@ final class ProfileViewController: UIViewController {
         
         button.setImage(UIImage(named: "Logout Button"), for: .normal)
         button.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
         
         return button
     }()
@@ -106,6 +108,42 @@ final class ProfileViewController: UIViewController {
         profileImage.kf.indicatorType = .activity
         (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
         profileImage.kf.setImage(with: url)
+    }
+    
+    @objc private func didTapLogoutButton() { // TODO: Move method to AlertPresenter
+        let controller = UIAlertController(
+            title: "Пока-пока!",
+            message: "Уверены что хотите выйти?",
+            preferredStyle: .alert
+        )
+        let no = UIAlertAction(
+            title: "Нет",
+            style: .cancel
+        )
+        let yes = UIAlertAction(
+            title: "Да",
+            style: .default
+        ) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            self.profileLogout()
+        }
+        controller.addAction(no)
+        controller.addAction(yes)
+        controller.preferredAction = no
+        
+        present(controller, animated: true)
+    }
+    
+    private func profileLogout() {
+        tokenStorage.removeAuthToken()
+        WebViewViewController.removeCookiesAndWebsiteData()
+        
+        guard let window = UIApplication.shared.windows.first else {
+            preconditionFailure("Failed to find UIWindow in UIApplication")
+        }
+        window.rootViewController = SplashViewController()
     }
     
     // MARK: - Private layout functions
