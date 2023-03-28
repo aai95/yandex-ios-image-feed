@@ -38,7 +38,7 @@ final class ProfileService {
     
     private func makeProfileRequest(with token: String) -> URLRequest {
         var request = URLRequest.makeHTTPRequest(path: "/me")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("\(tokenType) \(token)", forHTTPHeaderField: authHeader)
         return request
     }
     

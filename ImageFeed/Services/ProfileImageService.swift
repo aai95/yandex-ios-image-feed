@@ -45,7 +45,7 @@ final class ProfileImageService {
     
     private func makeUserRequest(with token: String, for username: String) -> URLRequest {
         var request = URLRequest.makeHTTPRequest(path: "/users/\(username)")
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("\(tokenType) \(token)", forHTTPHeaderField: authHeader)
         return request
     }
 }

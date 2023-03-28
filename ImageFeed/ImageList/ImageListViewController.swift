@@ -8,7 +8,7 @@ class ImageListViewController: UIViewController {
     private var imageListServiceObserver: NSObjectProtocol?
     private var photos: [Photo] = []
     
-    private lazy var dateFormatter: DateFormatter = {
+    private lazy var dateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         formatter.timeStyle = .none
@@ -83,7 +83,7 @@ class ImageListViewController: UIViewController {
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
         cell.likeButton.setImage(likeImage, for: .normal)
-        cell.dateLabel.text = dateFormatter.string(from: Date())
+        cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
         cell.delegate = self
     }
 }

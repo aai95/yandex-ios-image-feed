@@ -14,6 +14,10 @@ final class ImageListService {
     private var currentTask: URLSessionTask?
     private var lastLoadedPage: Int?
     
+    private lazy var dateFormatter = {
+        return ISO8601DateFormatter()
+    }()
+    
     private init() {}
     
     func fetchPhotosNextPage() {
@@ -60,7 +64,7 @@ final class ImageListService {
             + "?page=\(page)"
             + "&per_page=\(perPage)"
         )
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("\(tokenType) \(token)", forHTTPHeaderField: authHeader)
         return request
     }
     
@@ -70,7 +74,7 @@ final class ImageListService {
         for body in bodies {
             let photo = Photo(
                 id: body.id,
-                createdAt: ISO8601DateFormatter().date(from: body.createdAt),
+                createdAt: dateFormatter.date(from: body.createdAt),
                 size: CGSize(width: body.width, height: body.height),
                 isLiked: body.likedByUser,
                 description: body.description,
@@ -123,7 +127,7 @@ extension ImageListService {
             path: "/photos/\(photoID)/like",
             method: isLike ? .post : .delete
         )
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("\(tokenType) \(token)", forHTTPHeaderField: authHeader)
         return request
     }
     
