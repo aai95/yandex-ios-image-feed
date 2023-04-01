@@ -114,7 +114,7 @@ private extension SplashViewController {
         window.rootViewController = viewController
     }
     
-    func presentNetworkErrorAlert() {
+    func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
         isAuthAttemptInProgress = false
         
         let controller = UIAlertController(

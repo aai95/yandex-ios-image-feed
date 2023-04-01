@@ -5,13 +5,12 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
     
-    var image: UIImage! {
+    var imageLink: String! {
         didSet {
             guard isViewLoaded else {
                 return
             }
-            imageView.image = image
-            rescaleAndCenterImageInScrollView()
+            downloadImage()
         }
     }
     
@@ -25,8 +24,27 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        imageView.image = image
-        rescaleAndCenterImageInScrollView()
+        downloadImage()
+    }
+    
+    func downloadImage() {
+        guard let imageURL = URL(string: imageLink) else {
+            return
+        }
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: imageURL) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(_):
+                UIBlockingProgressHUD.dismiss()
+                self.presentNetworkErrorAlert()
+            }
+        }
     }
     
     @IBAction private func didTapBackButton() {
@@ -35,13 +53,13 @@ final class SingleImageViewController: UIViewController {
     
     @IBAction private func didTapShareButton(_ sender: UIButton) {
         let controller = UIActivityViewController(
-            activityItems: [image as Any],
+            activityItems: [imageView.image as Any],
             applicationActivities: nil
         )
         present(controller, animated: true)
     }
     
-    private func rescaleAndCenterImageInScrollView() {
+    private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         
@@ -60,6 +78,37 @@ final class SingleImageViewController: UIViewController {
         let offsetY = (newContentSize.height - visibleAreaSize.height) / 2
         
         scrollView.setContentOffset(CGPoint(x: offsetX, y: offsetY), animated: false)
+    }
+    
+    private func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
+        let controller = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+        let cancel = UIAlertAction(
+            title: "Отменить",
+            style: .cancel
+        ) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            self.didTapBackButton()
+        }
+        let retry = UIAlertAction(
+            title: "Повторить",
+            style: .default
+        ) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            self.downloadImage()
+        }
+        controller.addAction(cancel)
+        controller.addAction(retry)
+        controller.preferredAction = retry
+        
+        present(controller, animated: true)
     }
 }
 
