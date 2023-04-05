@@ -25,18 +25,7 @@ class AuthHelper: AuthHelperProtocol {
         return URLRequest(url: makeAuthURL())
     }
     
-    func extractCode(from url: URL) -> String? {
-        if let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let item = urlComponents.queryItems?.first(where: { $0.name == config.responseType })
-        {
-            return item.value
-        } else {
-            return nil
-        }
-    }
-    
-    private func makeAuthURL() -> URL {
+    func makeAuthURL() -> URL {
         guard var urlComponents = URLComponents(url: config.baseURL, resolvingAgainstBaseURL: true) else {
             preconditionFailure("Failed to init URLComponents with url \(config.baseURL)")
         }
@@ -51,5 +40,16 @@ class AuthHelper: AuthHelperProtocol {
             preconditionFailure("Failed to get URL from URLComponents")
         }
         return authURL
+    }
+    
+    func extractCode(from url: URL) -> String? {
+        if let urlComponents = URLComponents(string: url.absoluteString),
+           urlComponents.path == "/oauth/authorize/native",
+           let item = urlComponents.queryItems?.first(where: { $0.name == config.responseType })
+        {
+            return item.value
+        } else {
+            return nil
+        }
     }
 }

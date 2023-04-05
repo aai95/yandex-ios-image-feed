@@ -253,7 +253,7 @@
         <!--Web View View Controller-->
         <scene sceneID="7U4-U3-INP">
             <objects>
-                <viewController modalPresentationStyle="fullScreen" id="siK-zW-Ja4" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" modalPresentationStyle="fullScreen" id="siK-zW-Ja4" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1Bf-XA-mNv">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
