@@ -10,35 +10,21 @@ protocol WebViewPresenterProtocol {
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     
+    private let authHelper: AuthHelperProtocol
+    
     weak var controller: WebViewViewControllerProtocol?
     
+    init(authHelper: AuthHelperProtocol) {
+        self.authHelper = authHelper
+    }
+    
     func viewDidLoad() {
-        guard var urlComponents = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
-            preconditionFailure("Failed to init URLComponents with url \(baseURL)")
-        }
-        urlComponents.path = "/oauth/authorize"
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: accessKey),
-            URLQueryItem(name: "redirect_uri", value: redirectURI),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: accessScope)
-        ]
-        guard let authURL = urlComponents.url else {
-            preconditionFailure("Failed to get URL from URLComponents")
-        }
         didUpdateProgress(with: 0.0)
-        controller?.load(by: URLRequest(url: authURL))
+        controller?.load(by: authHelper.makeAuthRequest())
     }
     
     func extractCode(from url: URL) -> String? {
-        if let urlComponents = URLComponents(string: url.absoluteString),
-           urlComponents.path == "/oauth/authorize/native",
-           let item = urlComponents.queryItems?.first(where: { $0.name == "code" })
-        {
-            return item.value
-        } else {
-            return nil
-        }
+        authHelper.extractCode(from: url)
     }
     
     func didUpdateProgress(with value: Float) {
