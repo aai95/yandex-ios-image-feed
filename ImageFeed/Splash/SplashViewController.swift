@@ -6,6 +6,7 @@ final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     
+    private var alertPresenter: AlertPresenter?
     private var isAuthAttemptInProgress = false
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -16,6 +17,8 @@ final class SplashViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(delegate: self)
         makeSplashViewLayout()
     }
     
@@ -70,6 +73,13 @@ extension SplashViewController: AuthViewControllerDelegate {
     }
 }
 
+extension SplashViewController: AlertPresenterDelegate {
+    
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
+    }
+}
+
 private extension SplashViewController {
     
     func fetchOAuthToken(_ code: String) {
@@ -114,21 +124,17 @@ private extension SplashViewController {
         window.rootViewController = viewController
     }
     
-    func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
+    func presentNetworkErrorAlert() {
         isAuthAttemptInProgress = false
         
-        let controller = UIAlertController(
+        let okActionModel = AlertActionModel(
+            title: "OK"
+        )
+        let alertModel = AlertModel(
             title: "Что-то пошло не так",
             message: "Не удалось войти в систему",
-            preferredStyle: .alert
+            actions: [okActionModel]
         )
-        let action = UIAlertAction(
-            title: "OK",
-            style: .default
-        )
-        controller.addAction(action)
-        controller.preferredAction = action
-        
-        present(controller, animated: true)
+        alertPresenter?.presentAlert(model: alertModel)
     }
 }

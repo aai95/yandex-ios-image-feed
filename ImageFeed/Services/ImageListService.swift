@@ -9,7 +9,7 @@ final class ImageListService {
     private let session = URLSession.shared
     private let perPage = 10
     
-    private (set) var photos: [Photo] = []
+    private (set) var photos = Array<Photo>()
     
     private var currentTask: URLSessionTask?
     private var lastLoadedPage: Int?

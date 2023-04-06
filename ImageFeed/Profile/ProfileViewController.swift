@@ -59,6 +59,7 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var alertPresenter: AlertPresenter?
     private var profileImageServiceObserver: NSObjectProtocol?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -69,6 +70,8 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(delegate: self)
         
         makeProfileViewLayout()
         updateProfileDetails()
@@ -110,30 +113,27 @@ final class ProfileViewController: UIViewController {
         profileImage.kf.setImage(with: url)
     }
     
-    @objc private func didTapLogoutButton() { // TODO: Move method to AlertPresenter
-        let controller = UIAlertController(
+    @objc private func didTapLogoutButton() {
+        let noActionModel = AlertActionModel(
+            title: "Нет",
+            style: .cancel,
+            isPreferred: true
+        )
+        let yesActionModel = AlertActionModel(
+            title: "Да",
+            handler: { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.profileLogout()
+            }
+        )
+        let alertModel = AlertModel(
             title: "Пока-пока!",
             message: "Уверены что хотите выйти?",
-            preferredStyle: .alert
+            actions: [noActionModel, yesActionModel]
         )
-        let no = UIAlertAction(
-            title: "Нет",
-            style: .cancel
-        )
-        let yes = UIAlertAction(
-            title: "Да",
-            style: .default
-        ) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            self.profileLogout()
-        }
-        controller.addAction(no)
-        controller.addAction(yes)
-        controller.preferredAction = no
-        
-        present(controller, animated: true)
+        alertPresenter?.presentAlert(model: alertModel)
     }
     
     private func profileLogout() {
@@ -187,5 +187,12 @@ final class ProfileViewController: UIViewController {
         hStack.addArrangedSubview(logoutButton)
         
         return hStack
+    }
+}
+
+extension ProfileViewController: AlertPresenterDelegate {
+    
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
     }
 }

@@ -5,8 +5,9 @@ class ImageListViewController: UIViewController {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private let imageListService = ImageListService.shared
     
+    private var alertPresenter: AlertPresenter?
     private var imageListServiceObserver: NSObjectProtocol?
-    private var photos: [Photo] = []
+    private var photos = Array<Photo>()
     
     private lazy var dateFormatter = {
         let formatter = DateFormatter()
@@ -23,6 +24,8 @@ class ImageListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(delegate: self)
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
         imageListServiceObserver = NotificationCenter.default
@@ -133,6 +136,13 @@ extension ImageListViewController: UITableViewDelegate {
     }
 }
 
+extension ImageListViewController: AlertPresenterDelegate {
+    
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
+    }
+}
+
 extension ImageListViewController: ImageListCellDelegate {
     
     func imageListCellDidTapLike(_ cell: ImageListCell) {
@@ -159,19 +169,15 @@ extension ImageListViewController: ImageListCellDelegate {
         }
     }
     
-    private func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
-        let controller = UIAlertController(
+    private func presentNetworkErrorAlert() {
+        let okActionModel = AlertActionModel(
+            title: "OK"
+        )
+        let alertModel = AlertModel(
             title: "Что-то пошло не так",
             message: "Не удалось выполнить операцию",
-            preferredStyle: .alert
+            actions: [okActionModel]
         )
-        let action = UIAlertAction(
-            title: "OK",
-            style: .default
-        )
-        controller.addAction(action)
-        controller.preferredAction = action
-        
-        present(controller, animated: true)
+        alertPresenter?.presentAlert(model: alertModel)
     }
 }

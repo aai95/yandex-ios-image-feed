@@ -16,6 +16,8 @@
 		8E59F02329DD758D003AC1E2 /* WebViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E59F02229DD758D003AC1E2 /* WebViewPresenter.swift */; };
 		8E59F02529DDD387003AC1E2 /* AuthHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E59F02429DDD387003AC1E2 /* AuthHelper.swift */; };
 		8E59F03A29DDFE75003AC1E2 /* WebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E59F03929DDFE75003AC1E2 /* WebViewTests.swift */; };
+		8E59F04229DEC0A9003AC1E2 /* AlertModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E59F04129DEC0A9003AC1E2 /* AlertModels.swift */; };
+		8E59F04529DEC5D3003AC1E2 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E59F04429DEC5D3003AC1E2 /* AlertPresenter.swift */; };
 		8E5BC9A829818F96001E022C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9A729818F96001E022C /* AppDelegate.swift */; };
 		8E5BC9AA29818F96001E022C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9A929818F96001E022C /* SceneDelegate.swift */; };
 		8E5BC9AC29818F96001E022C /* ImageListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E5BC9AB29818F96001E022C /* ImageListViewController.swift */; };
@@ -57,6 +59,8 @@
 		8E59F02429DDD387003AC1E2 /* AuthHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHelper.swift; sourceTree = "<group>"; };
 		8E59F03729DDFE75003AC1E2 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E59F03929DDFE75003AC1E2 /* WebViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewTests.swift; sourceTree = "<group>"; };
+		8E59F04129DEC0A9003AC1E2 /* AlertModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModels.swift; sourceTree = "<group>"; };
+		8E59F04429DEC5D3003AC1E2 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		8E5BC9A429818F96001E022C /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E5BC9A729818F96001E022C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E5BC9A929818F96001E022C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +129,22 @@
 			path = ImageFeedTests;
 			sourceTree = "<group>";
 		};
+		8E59F04029DEC02F003AC1E2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8E59F04129DEC0A9003AC1E2 /* AlertModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		8E59F04329DEC591003AC1E2 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				8E59F04429DEC5D3003AC1E2 /* AlertPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
 		8E5BC99B29818F96001E022C = {
 			isa = PBXGroup;
 			children = (
@@ -146,6 +166,8 @@
 		8E5BC9A629818F96001E022C /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				8E59F04329DEC591003AC1E2 /* Presenters */,
+				8E59F04029DEC02F003AC1E2 /* Models */,
 				8EF6E22929A64DA800B70828 /* Authorization */,
 				8E5BC9C42986A721001E022C /* ImageList */,
 				8ED54F95298D472200B68937 /* Profile */,
@@ -354,6 +376,7 @@
 				8E98996B29AA1F1800478FEB /* OAuth2Service.swift in Sources */,
 				8E811F0B29BA1252004306BE /* ProfileService.swift in Sources */,
 				8ED54F97298D47B600B68937 /* ProfileViewController.swift in Sources */,
+				8E59F04229DEC0A9003AC1E2 /* AlertModels.swift in Sources */,
 				8E04C4FC29AA2A7D00B3BDE6 /* URLRequestExtension.swift in Sources */,
 				8E04C4FE29AA2BFC00B3BDE6 /* URLSessionExtension.swift in Sources */,
 				8E04C50129AB753800B3BDE6 /* SplashViewController.swift in Sources */,
@@ -365,6 +388,7 @@
 				8E811F0D29BB1E99004306BE /* ProfileImageService.swift in Sources */,
 				8EF6E22B29A64DF200B70828 /* AuthViewController.swift in Sources */,
 				8E87418C29A2824800FD9F0D /* Constants.swift in Sources */,
+				8E59F04529DEC5D3003AC1E2 /* AlertPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
