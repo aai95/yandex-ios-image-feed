@@ -105,22 +105,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8E04C4FF29AB74D400B3BDE6 /* Splash */ = {
-			isa = PBXGroup;
-			children = (
-				8E04C50029AB753800B3BDE6 /* SplashViewController.swift */,
-			);
-			path = Splash;
-			sourceTree = "<group>";
-		};
-		8E1BD6C229C0D6BF009C2F88 /* TabBar */ = {
-			isa = PBXGroup;
-			children = (
-				8E1BD6C329C0D7D4009C2F88 /* TabBarController.swift */,
-			);
-			path = TabBar;
-			sourceTree = "<group>";
-		};
 		8E59F03829DDFE75003AC1E2 /* ImageFeedTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -141,8 +125,44 @@
 			isa = PBXGroup;
 			children = (
 				8E59F04429DEC5D3003AC1E2 /* AlertPresenter.swift */,
+				8E59F02429DDD387003AC1E2 /* AuthHelper.swift */,
+				8E59F02229DD758D003AC1E2 /* WebViewPresenter.swift */,
 			);
 			path = Presenters;
+			sourceTree = "<group>";
+		};
+		8E59F04629DEFA34003AC1E2 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				8EF6E22A29A64DF200B70828 /* AuthViewController.swift */,
+				8E5BC9C22986A6A7001E022C /* ImageListCell.swift */,
+				8E5BC9AB29818F96001E022C /* ImageListViewController.swift */,
+				8ED54F96298D47B600B68937 /* ProfileViewController.swift */,
+				8E870E43298FE9850097782C /* SingleImageViewController.swift */,
+				8E04C50029AB753800B3BDE6 /* SplashViewController.swift */,
+				8E1BD6C329C0D7D4009C2F88 /* TabBarController.swift */,
+				8EF6E22C29A65BF600B70828 /* WebViewViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		8E59F04729DEFA69003AC1E2 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8EF3E2B8299904D20041F1BE /* UIColorExtension.swift */,
+				8E04C4FB29AA2A7D00B3BDE6 /* URLRequestExtension.swift */,
+				8E04C4FD29AA2BFC00B3BDE6 /* URLSessionExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		8E59F04829DEFC99003AC1E2 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				8E87418B29A2824800FD9F0D /* Constants.swift */,
+				8E811F0829B78F43004306BE /* UIBlockingProgressHUD.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		8E5BC99B29818F96001E022C = {
@@ -166,16 +186,12 @@
 		8E5BC9A629818F96001E022C /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				8E59F04329DEC591003AC1E2 /* Presenters */,
+				8E59F04729DEFA69003AC1E2 /* Extensions */,
 				8E59F04029DEC02F003AC1E2 /* Models */,
-				8EF6E22929A64DA800B70828 /* Authorization */,
-				8E5BC9C42986A721001E022C /* ImageList */,
-				8ED54F95298D472200B68937 /* Profile */,
+				8E59F04329DEC591003AC1E2 /* Presenters */,
 				8E98996929AA1ECD00478FEB /* Services */,
-				8E870E42298FE9220097782C /* SingleImage */,
-				8E04C4FF29AB74D400B3BDE6 /* Splash */,
-				8E1BD6C229C0D6BF009C2F88 /* TabBar */,
-				8EF3E2B7299904390041F1BE /* Helpers */,
+				8E59F04829DEFC99003AC1E2 /* Utilities */,
+				8E59F04629DEFA34003AC1E2 /* ViewControllers */,
 				8E5BC9A729818F96001E022C /* AppDelegate.swift */,
 				8E5BC9A929818F96001E022C /* SceneDelegate.swift */,
 				8E5BC9B229818F97001E022C /* LaunchScreen.storyboard */,
@@ -186,64 +202,16 @@
 			path = ImageFeed;
 			sourceTree = "<group>";
 		};
-		8E5BC9C42986A721001E022C /* ImageList */ = {
-			isa = PBXGroup;
-			children = (
-				8E5BC9C22986A6A7001E022C /* ImageListCell.swift */,
-				8E5BC9AB29818F96001E022C /* ImageListViewController.swift */,
-			);
-			path = ImageList;
-			sourceTree = "<group>";
-		};
-		8E870E42298FE9220097782C /* SingleImage */ = {
-			isa = PBXGroup;
-			children = (
-				8E870E43298FE9850097782C /* SingleImageViewController.swift */,
-			);
-			path = SingleImage;
-			sourceTree = "<group>";
-		};
 		8E98996929AA1ECD00478FEB /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				8E7C5B3629C60E0E00A9735D /* ImageListService.swift */,
 				8E98996A29AA1F1800478FEB /* OAuth2Service.swift */,
 				8E98996C29AA206D00478FEB /* OAuth2TokenStorage.swift */,
-				8E811F0A29BA1252004306BE /* ProfileService.swift */,
 				8E811F0C29BB1E99004306BE /* ProfileImageService.swift */,
+				8E811F0A29BA1252004306BE /* ProfileService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		8ED54F95298D472200B68937 /* Profile */ = {
-			isa = PBXGroup;
-			children = (
-				8ED54F96298D47B600B68937 /* ProfileViewController.swift */,
-			);
-			path = Profile;
-			sourceTree = "<group>";
-		};
-		8EF3E2B7299904390041F1BE /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				8E87418B29A2824800FD9F0D /* Constants.swift */,
-				8E811F0829B78F43004306BE /* UIBlockingProgressHUD.swift */,
-				8EF3E2B8299904D20041F1BE /* UIColorExtension.swift */,
-				8E04C4FB29AA2A7D00B3BDE6 /* URLRequestExtension.swift */,
-				8E04C4FD29AA2BFC00B3BDE6 /* URLSessionExtension.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
-		8EF6E22929A64DA800B70828 /* Authorization */ = {
-			isa = PBXGroup;
-			children = (
-				8E59F02429DDD387003AC1E2 /* AuthHelper.swift */,
-				8EF6E22A29A64DF200B70828 /* AuthViewController.swift */,
-				8EF6E22C29A65BF600B70828 /* WebViewViewController.swift */,
-				8E59F02229DD758D003AC1E2 /* WebViewPresenter.swift */,
-			);
-			path = Authorization;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
