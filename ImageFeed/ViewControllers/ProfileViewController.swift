@@ -3,10 +3,6 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let tokenStorage = OAuth2TokenStorage.shared
-    
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
         
@@ -62,11 +58,11 @@ final class ProfileViewController: UIViewController {
     private var alertPresenter: AlertPresenter?
     private var profileImageServiceObserver: NSObjectProtocol?
     
+    var presenter: ProfileViewPresenterProtocol?
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
-    // MARK: - Life cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,27 +70,14 @@ final class ProfileViewController: UIViewController {
         alertPresenter = AlertPresenter(delegate: self)
         
         makeProfileViewLayout()
-        updateProfileDetails()
+        subscribeToProfileImageUpdate()
         
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else {
-                    return
-                }
-                self.updateProfileImage()
-            }
-        
+        updateProfileData()
         updateProfileImage()
     }
     
-    // MARK: - Private functions
-    
-    private func updateProfileDetails() {
-        guard let profile = profileService.profile else {
+    func updateProfileData() {
+        guard let profile = presenter?.presentProfile() else {
             return
         }
         nameLabel.text = profile.name
@@ -102,15 +85,22 @@ final class ProfileViewController: UIViewController {
         descriptionLabel.text = profile.bio
     }
     
-    private func updateProfileImage() {
-        guard let link = profileImageService.profileImageLink,
-              let url = URL(string: link)
-        else {
+    func updateProfileImage() {
+        guard let url = presenter?.presentProfileImageURL() else {
             return
         }
         profileImage.kf.indicatorType = .activity
         (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
         profileImage.kf.setImage(with: url)
+    }
+    
+    func logoutProfile() {
+        presenter?.removeUserDataWhenLogout()
+        
+        guard let window = UIApplication.shared.windows.first else {
+            preconditionFailure("Failed to find UIWindow in UIApplication")
+        }
+        window.rootViewController = SplashViewController()
     }
     
     @objc private func didTapLogoutButton() {
@@ -125,7 +115,7 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.profileLogout()
+                self.logoutProfile()
             }
         )
         let alertModel = AlertModel(
@@ -136,19 +126,31 @@ final class ProfileViewController: UIViewController {
         alertPresenter?.presentAlert(model: alertModel)
     }
     
-    private func profileLogout() {
-        tokenStorage.removeAuthToken()
-        WebViewViewController.removeCookiesAndWebsiteData()
-        
-        guard let window = UIApplication.shared.windows.first else {
-            preconditionFailure("Failed to find UIWindow in UIApplication")
-        }
-        window.rootViewController = SplashViewController()
+    private func subscribeToProfileImageUpdate() {
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.updateProfileImage()
+            }
     }
+}
+
+extension ProfileViewController: AlertPresenterDelegate {
     
-    // MARK: - Private layout functions
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
+    }
+}
+
+private extension ProfileViewController {
     
-    private func makeProfileViewLayout() {
+    func makeProfileViewLayout() {
         let mainStack = createVerticalStack()
         
         view.addSubview(mainStack)
@@ -163,7 +165,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func createVerticalStack() -> UIStackView {
+    func createVerticalStack() -> UIStackView {
         let vStack = UIStackView()
         
         vStack.axis = .vertical
@@ -177,7 +179,7 @@ final class ProfileViewController: UIViewController {
         return vStack
     }
     
-    private func createHorizontalStack() -> UIStackView {
+    func createHorizontalStack() -> UIStackView {
         let hStack = UIStackView()
         
         hStack.axis = .horizontal
@@ -187,12 +189,5 @@ final class ProfileViewController: UIViewController {
         hStack.addArrangedSubview(logoutButton)
         
         return hStack
-    }
-}
-
-extension ProfileViewController: AlertPresenterDelegate {
-    
-    func didPresentAlert(controller: UIAlertController) {
-        present(controller, animated: true)
     }
 }
