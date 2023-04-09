@@ -1,0 +1,65 @@
+import Foundation
+
+protocol ImageListViewPresenterProtocol {
+    var controller: ImageListViewControllerProtocol? { get set }
+    
+    func presentNextPhotos()
+    func didUpdatePhotos()
+    
+    func getPhotoBy(index: Int) -> Photo
+    func countPhotos() -> Int
+    
+    func changeLikeOnPhoto(for cell: ImageListCell, with indexPath: IndexPath)
+}
+
+final class ImageListViewPresenter: ImageListViewPresenterProtocol {
+    
+    private let imageListService = ImageListService.shared
+    
+    private var photos = Array<Photo>()
+    
+    weak var controller: ImageListViewControllerProtocol?
+    
+    func presentNextPhotos() {
+        imageListService.fetchPhotosNextPage()
+    }
+    
+    func didUpdatePhotos() {
+        let oldCount = photos.count
+        let newCount = imageListService.photos.count
+        
+        if oldCount != newCount {
+            photos = imageListService.photos
+            controller?.updateTableViewAnimated(indexes: oldCount..<newCount)
+        }
+    }
+    
+    func getPhotoBy(index: Int) -> Photo {
+        return photos[index]
+    }
+    
+    func countPhotos() -> Int {
+        return photos.count
+    }
+    
+    func changeLikeOnPhoto(for cell: ImageListCell, with indexPath: IndexPath) {
+        let photo: Photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show()
+        imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(_):
+                self.photos = self.imageListService.photos
+                let changedPhoto = self.photos[indexPath.row]
+                cell.putLikeOnPhoto(isLiked: changedPhoto.isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(_):
+                UIBlockingProgressHUD.dismiss()
+                self.controller?.presentNetworkErrorAlert()
+            }
+        }
+    }
+}

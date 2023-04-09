@@ -5,17 +5,20 @@ final class TabBarController: UITabBarController {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        let imageListViewController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "ImageListViewController")
+        guard let imageListController = UIStoryboard(name: "Main", bundle: .main)
+            .instantiateViewController(withIdentifier: "ImageListViewController") as? ImageListViewController
+        else {
+            preconditionFailure("Failed to cast UIViewController as ImageListViewController")
+        }
+        imageListController.configure(presenter: ImageListViewPresenter())
         
-        let profileViewController = ProfileViewController()
-        
-        profileViewController.presenter = ProfileViewPresenter()
-        profileViewController.tabBarItem = UITabBarItem(
+        let profileController = ProfileViewController()
+        profileController.presenter = ProfileViewPresenter()
+        profileController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "Profile Tab"),
             selectedImage: nil
         )
-        self.viewControllers = [imageListViewController, profileViewController]
+        self.viewControllers = [imageListController, profileController]
     }
 }

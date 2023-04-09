@@ -1,20 +1,17 @@
 import UIKit
 
-class ImageListViewController: UIViewController {
+protocol ImageListViewControllerProtocol: AnyObject {
+    func updateTableViewAnimated(indexes: Range<Int>)
+    func presentNetworkErrorAlert()
+}
+
+class ImageListViewController: UIViewController, ImageListViewControllerProtocol {
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    private let imageListService = ImageListService.shared
     
+    private var presenter: ImageListViewPresenterProtocol!
     private var alertPresenter: AlertPresenter?
     private var imageListServiceObserver: NSObjectProtocol?
-    private var photos = Array<Photo>()
-    
-    private lazy var dateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
     
     @IBOutlet private var tableView: UITableView!
     
@@ -28,6 +25,47 @@ class ImageListViewController: UIViewController {
         alertPresenter = AlertPresenter(delegate: self)
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
+        subscribeToPhotosUpdate()
+        presenter.presentNextPhotos()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            let controller = segue.destination as! SingleImageViewController
+            let indexPath = sender as! IndexPath
+            controller.imageLink = presenter.getPhotoBy(index: indexPath.row).fullSizeLink
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
+    
+    func configure(presenter: ImageListViewPresenterProtocol) {
+        self.presenter = presenter
+        self.presenter.controller = self
+    }
+    
+    func updateTableViewAnimated(indexes: Range<Int>) {
+        tableView.performBatchUpdates {
+            let indexPaths = indexes.map { index in
+                IndexPath(row: index, section: 0)
+            }
+            tableView.insertRows(at: indexPaths, with: .automatic)
+        }
+    }
+    
+    func presentNetworkErrorAlert() {
+        let okActionModel = AlertActionModel(
+            title: "OK"
+        )
+        let alertModel = AlertModel(
+            title: "Что-то пошло не так",
+            message: "Не удалось выполнить операцию",
+            actions: [okActionModel]
+        )
+        alertPresenter?.presentAlert(model: alertModel)
+    }
+    
+    private func subscribeToPhotosUpdate() {
         imageListServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ImageListService.didChangeNotification,
@@ -37,57 +75,8 @@ class ImageListViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.updateTableViewAnimated()
+                self.presenter.didUpdatePhotos()
             }
-        
-        imageListService.fetchPhotosNextPage()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showSingleImageSegueIdentifier {
-            let controller = segue.destination as! SingleImageViewController
-            let indexPath = sender as! IndexPath
-            controller.imageLink = photos[indexPath.row].fullSizeLink
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
-    
-    private func updateTableViewAnimated() {
-        let oldCount = photos.count
-        let newCount = imageListService.photos.count
-        
-        if oldCount != newCount {
-            photos = imageListService.photos
-            
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { index in
-                    IndexPath(row: index, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .automatic)
-            }
-        }
-    }
-    
-    private func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
-        let photo = photos[indexPath.row]
-        guard let photoURL = URL(string: photo.thumbSizeLink) else {
-            return
-        }
-        let likeImage = photo.isLiked ? UIImage(named: "Like On Button") : UIImage(named: "Like Off Button")
-        
-        cell.photoImage.kf.setImage(
-            with: photoURL,
-            placeholder: UIImage(named: "Photo Placeholder")
-        ) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            self.tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
-        cell.likeButton.setImage(likeImage, for: .normal)
-        cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
-        cell.delegate = self
     }
 }
 
@@ -97,23 +86,22 @@ extension ImageListViewController: UITableViewDataSource {
         let lastRowIndex = tableView.numberOfRows(inSection: 0) - 1
         
         if indexPath.row == lastRowIndex {
-            imageListService.fetchPhotosNextPage()
+            presenter.presentNextPhotos()
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count
+        return presenter.countPhotos()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
-        
-        guard let imageListCell = cell as? ImageListCell else {
-            print("Failed to cast UITableViewCell as ImageListCell")
-            return UITableViewCell()
+        guard let imageListCell = tableView
+            .dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath) as? ImageListCell
+        else {
+            preconditionFailure("Failed to cast UITableViewCell as ImageListCell")
         }
-        
-        configCell(for: imageListCell, with: indexPath)
+        imageListCell.delegate = self
+        imageListCell.configure(photo: presenter.getPhotoBy(index: indexPath.row))
         return imageListCell
     }
 }
@@ -126,7 +114,7 @@ extension ImageListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let insets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-        let photoSize = photos[indexPath.row].size
+        let photoSize = presenter.getPhotoBy(index: indexPath.row).size
         
         let cellWidth = tableView.bounds.width - insets.left - insets.right
         let scale = cellWidth / photoSize.width
@@ -145,39 +133,10 @@ extension ImageListViewController: AlertPresenterDelegate {
 
 extension ImageListViewController: ImageListCellDelegate {
     
-    func imageListCellDidTapLike(_ cell: ImageListCell) {
+    func imageListCellDidTapLike(on cell: ImageListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else {
             return
         }
-        let photo = photos[indexPath.row]
-        
-        UIBlockingProgressHUD.show()
-        imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-            switch result {
-            case .success(_):
-                self.photos = self.imageListService.photos
-                let changedPhoto = self.photos[indexPath.row]
-                cell.putLikeOnPhoto(isLiked: changedPhoto.isLiked)
-                UIBlockingProgressHUD.dismiss()
-            case .failure(_):
-                UIBlockingProgressHUD.dismiss()
-                self.presentNetworkErrorAlert()
-            }
-        }
-    }
-    
-    private func presentNetworkErrorAlert() {
-        let okActionModel = AlertActionModel(
-            title: "OK"
-        )
-        let alertModel = AlertModel(
-            title: "Что-то пошло не так",
-            message: "Не удалось выполнить операцию",
-            actions: [okActionModel]
-        )
-        alertPresenter?.presentAlert(model: alertModel)
+        presenter?.changeLikeOnPhoto(for: cell, with: indexPath)
     }
 }
