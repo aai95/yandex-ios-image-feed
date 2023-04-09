@@ -10,10 +10,10 @@ final class TabBarController: UITabBarController {
         else {
             preconditionFailure("Failed to cast UIViewController as ImageListViewController")
         }
-        imageListController.configure(presenter: ImageListViewPresenter())
+        imageListController.configure(presenter: ImageListPresenter())
         
         let profileController = ProfileViewController()
-        profileController.presenter = ProfileViewPresenter()
+        profileController.configure(presenter: ProfilePresenter())
         profileController.tabBarItem = UITabBarItem(
             title: nil,
             image: UIImage(named: "Profile Tab"),

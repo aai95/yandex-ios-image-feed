@@ -9,7 +9,7 @@ class ImageListViewController: UIViewController, ImageListViewControllerProtocol
     
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    private var presenter: ImageListViewPresenterProtocol!
+    private var presenter: ImageListPresenterProtocol!
     private var alertPresenter: AlertPresenter?
     private var imageListServiceObserver: NSObjectProtocol?
     
@@ -39,7 +39,7 @@ class ImageListViewController: UIViewController, ImageListViewControllerProtocol
         }
     }
     
-    func configure(presenter: ImageListViewPresenterProtocol) {
+    func configure(presenter: ImageListPresenterProtocol) {
         self.presenter = presenter
         self.presenter.controller = self
     }

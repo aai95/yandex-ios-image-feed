@@ -1,7 +1,13 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateProfile(model: Profile)
+    func updateProfileImage(url: URL)
+    func logoutProfile()
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
@@ -55,10 +61,9 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var presenter: ProfilePresenterProtocol!
     private var alertPresenter: AlertPresenter?
     private var profileImageServiceObserver: NSObjectProtocol?
-    
-    var presenter: ProfileViewPresenterProtocol?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -72,31 +77,28 @@ final class ProfileViewController: UIViewController {
         makeProfileViewLayout()
         subscribeToProfileImageUpdate()
         
-        updateProfileData()
-        updateProfileImage()
+        presenter.presentProfile()
+        presenter.presentProfileImage()
     }
     
-    func updateProfileData() {
-        guard let profile = presenter?.presentProfile() else {
-            return
-        }
-        nameLabel.text = profile.name
-        loginLabel.text = profile.login
-        descriptionLabel.text = profile.bio
+    func configure(presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        self.presenter.controller = self
     }
     
-    func updateProfileImage() {
-        guard let url = presenter?.presentProfileImageURL() else {
-            return
-        }
+    func updateProfile(model: Profile) {
+        nameLabel.text = model.name
+        loginLabel.text = model.login
+        descriptionLabel.text = model.bio
+    }
+    
+    func updateProfileImage(url: URL) {
         profileImage.kf.indicatorType = .activity
         (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
         profileImage.kf.setImage(with: url)
     }
     
     func logoutProfile() {
-        presenter?.removeUserDataWhenLogout()
-        
         guard let window = UIApplication.shared.windows.first else {
             preconditionFailure("Failed to find UIWindow in UIApplication")
         }
@@ -115,7 +117,7 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.logoutProfile()
+                self.presenter.removeUserDataBeforeLogout()
             }
         )
         let alertModel = AlertModel(
@@ -136,7 +138,7 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.updateProfileImage()
+                self.presenter.presentProfileImage()
             }
     }
 }
@@ -151,7 +153,7 @@ extension ProfileViewController: AlertPresenterDelegate {
 private extension ProfileViewController {
     
     func makeProfileViewLayout() {
-        let mainStack = createVerticalStack()
+        let mainStack = makeVerticalStack()
         
         view.addSubview(mainStack)
         view.backgroundColor = UIColor.ypBlack
@@ -165,13 +167,13 @@ private extension ProfileViewController {
         ])
     }
     
-    func createVerticalStack() -> UIStackView {
+    func makeVerticalStack() -> UIStackView {
         let vStack = UIStackView()
         
         vStack.axis = .vertical
         vStack.spacing = 8
         
-        vStack.addArrangedSubview(createHorizontalStack())
+        vStack.addArrangedSubview(makeHorizontalStack())
         vStack.addArrangedSubview(nameLabel)
         vStack.addArrangedSubview(loginLabel)
         vStack.addArrangedSubview(descriptionLabel)
@@ -179,7 +181,7 @@ private extension ProfileViewController {
         return vStack
     }
     
-    func createHorizontalStack() -> UIStackView {
+    func makeHorizontalStack() -> UIStackView {
         let hStack = UIStackView()
         
         hStack.axis = .horizontal

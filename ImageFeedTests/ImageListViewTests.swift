@@ -1,7 +1,7 @@
 import XCTest
 @testable import ImageFeed
 
-final class ImageListViewPresenterSpy: ImageListViewPresenterProtocol {
+final class ImageListPresenterSpy: ImageListPresenterProtocol {
     
     var controller: ImageListViewControllerProtocol?
     var isLoadNextPhotosCalled = false
@@ -35,7 +35,7 @@ final class ImageListViewTests: XCTestCase {
     
     func testControllerCallsLoadNextPhotos() {
         // Given
-        let imageListPresenterSpy = ImageListViewPresenterSpy()
+        let imageListPresenterSpy = ImageListPresenterSpy()
         let imageListController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "ImageListViewController") as! ImageListViewController
         
@@ -50,7 +50,7 @@ final class ImageListViewTests: XCTestCase {
     
     func testPresenterHasNoPhotosAfterInit() {
         // Given
-        let imageListPresenter = ImageListViewPresenter()
+        let imageListPresenter = ImageListPresenter()
         
         // When
         let count = imageListPresenter.countPhotos()

@@ -1,62 +1,37 @@
 import XCTest
 @testable import ImageFeed
 
-final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
+final class ProfilePresenterSpy: ProfilePresenterProtocol {
     
+    var controller: ProfileViewControllerProtocol?
     var isPresentProfileCalled = false
-    var isPresentProfileImageURLCalled = false
-    var isRemoveUserDataWhenLogoutCalled = false
+    var isPresentProfileImageCalled = false
     
-    func presentProfile() -> Profile? {
+    func presentProfile() {
         isPresentProfileCalled = true
-        return nil
     }
     
-    func presentProfileImageURL() -> URL? {
-        isPresentProfileImageURLCalled = true
-        return nil
+    func presentProfileImage() {
+        isPresentProfileImageCalled = true
     }
     
-    func removeUserDataWhenLogout() {
-        isRemoveUserDataWhenLogoutCalled = true
-    }
+    func removeUserDataBeforeLogout() {}
 }
 
 final class ProfileViewTests: XCTestCase {
     
-    private let profilePresenterSpy = ProfileViewPresenterSpy()
-    private let profileController = ProfileViewController()
-    
-    func testControllerCallsPresentProfile() {
+    func testControllerCallsPresentFunctions() {
         // Given
-        profileController.presenter = profilePresenterSpy
+        let profilePresenterSpy = ProfilePresenterSpy()
+        let profileController = ProfileViewController()
+        
+        profileController.configure(presenter: profilePresenterSpy)
         
         // When
-        profileController.updateProfileData()
+        _ = profileController.view
         
         // Then
         XCTAssertTrue(profilePresenterSpy.isPresentProfileCalled)
-    }
-    
-    func testControllerCallsPresentProfileImageURL() {
-        // Given
-        profileController.presenter = profilePresenterSpy
-        
-        // When
-        profileController.updateProfileImage()
-        
-        // Then
-        XCTAssertTrue(profilePresenterSpy.isPresentProfileImageURLCalled)
-    }
-    
-    func testControllerCallsRemoveUserDataWhenLogout() {
-        // Given
-        profileController.presenter = profilePresenterSpy
-        
-        // When
-        profileController.logoutProfile()
-        
-        // Then
-        XCTAssertTrue(profilePresenterSpy.isRemoveUserDataWhenLogoutCalled)
+        XCTAssertTrue(profilePresenterSpy.isPresentProfileImageCalled)
     }
 }

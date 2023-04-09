@@ -1,6 +1,6 @@
 import Foundation
 
-protocol ImageListViewPresenterProtocol {
+protocol ImageListPresenterProtocol {
     var controller: ImageListViewControllerProtocol? { get set }
     
     func loadNextPhotos()
@@ -12,7 +12,7 @@ protocol ImageListViewPresenterProtocol {
     func changeLikeOnPhoto(for cell: ImageListCell, with indexPath: IndexPath)
 }
 
-final class ImageListViewPresenter: ImageListViewPresenterProtocol {
+final class ImageListPresenter: ImageListPresenterProtocol {
     
     private let imageListService = ImageListService.shared
     
