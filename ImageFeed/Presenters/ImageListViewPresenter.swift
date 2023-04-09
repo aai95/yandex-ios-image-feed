@@ -3,8 +3,8 @@ import Foundation
 protocol ImageListViewPresenterProtocol {
     var controller: ImageListViewControllerProtocol? { get set }
     
-    func presentNextPhotos()
-    func didUpdatePhotos()
+    func loadNextPhotos()
+    func didLoadNextPhotos()
     
     func getPhotoBy(index: Int) -> Photo
     func countPhotos() -> Int
@@ -20,11 +20,11 @@ final class ImageListViewPresenter: ImageListViewPresenterProtocol {
     
     weak var controller: ImageListViewControllerProtocol?
     
-    func presentNextPhotos() {
+    func loadNextPhotos() {
         imageListService.fetchPhotosNextPage()
     }
     
-    func didUpdatePhotos() {
+    func didLoadNextPhotos() {
         let oldCount = photos.count
         let newCount = imageListService.photos.count
         
@@ -43,7 +43,7 @@ final class ImageListViewPresenter: ImageListViewPresenterProtocol {
     }
     
     func changeLikeOnPhoto(for cell: ImageListCell, with indexPath: IndexPath) {
-        let photo: Photo = photos[indexPath.row]
+        let photo = photos[indexPath.row]
         
         UIBlockingProgressHUD.show()
         imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in

@@ -26,7 +26,7 @@ class ImageListViewController: UIViewController, ImageListViewControllerProtocol
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
         subscribeToPhotosUpdate()
-        presenter.presentNextPhotos()
+        presenter.loadNextPhotos()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -75,7 +75,7 @@ class ImageListViewController: UIViewController, ImageListViewControllerProtocol
                 guard let self = self else {
                     return
                 }
-                self.presenter.didUpdatePhotos()
+                self.presenter.didLoadNextPhotos()
             }
     }
 }
@@ -86,7 +86,7 @@ extension ImageListViewController: UITableViewDataSource {
         let lastRowIndex = tableView.numberOfRows(inSection: 0) - 1
         
         if indexPath.row == lastRowIndex {
-            presenter.presentNextPhotos()
+            presenter.loadNextPhotos()
         }
     }
     
@@ -124,13 +124,6 @@ extension ImageListViewController: UITableViewDelegate {
     }
 }
 
-extension ImageListViewController: AlertPresenterDelegate {
-    
-    func didPresentAlert(controller: UIAlertController) {
-        present(controller, animated: true)
-    }
-}
-
 extension ImageListViewController: ImageListCellDelegate {
     
     func imageListCellDidTapLike(on cell: ImageListCell) {
@@ -138,5 +131,12 @@ extension ImageListViewController: ImageListCellDelegate {
             return
         }
         presenter?.changeLikeOnPhoto(for: cell, with: indexPath)
+    }
+}
+
+extension ImageListViewController: AlertPresenterDelegate {
+    
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
     }
 }

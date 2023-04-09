@@ -27,13 +27,11 @@ final class ImageListCell: UITableViewCell {
     }
     
     func configure(photo: Photo) {
-        guard let photoURL = URL(string: photo.thumbSizeLink) else {
+        guard let url = URL(string: photo.thumbSizeLink) else {
             return
         }
-        let likeImage = photo.isLiked ? UIImage(named: "Like On Button") : UIImage(named: "Like Off Button")
-        
-        photoImage.kf.setImage(with: photoURL, placeholder: UIImage(named: "Photo Placeholder"))
-        likeButton.setImage(likeImage, for: .normal)
+        photoImage.kf.setImage(with: url, placeholder: UIImage(named: "Photo Placeholder"))
+        putLikeOnPhoto(isLiked: photo.isLiked)
         dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
     }
     
