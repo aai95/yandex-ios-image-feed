@@ -16,6 +16,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         image.layer.cornerRadius = 35
         image.widthAnchor.constraint(equalToConstant: 70).isActive = true
         image.heightAnchor.constraint(equalTo: image.widthAnchor).isActive = true
+        image.accessibilityIdentifier = "Profile"
         
         return image
     }()
@@ -26,6 +27,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         button.setImage(UIImage(named: "Logout Button"), for: .normal)
         button.widthAnchor.constraint(equalToConstant: 40).isActive = true
         button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        button.accessibilityIdentifier = "Logout"
         
         return button
     }()
@@ -36,6 +38,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         label.text = "Екатерина Новикова"
         label.textColor = .ypWhite
         label.font = .boldSystemFont(ofSize: 23)
+        label.accessibilityIdentifier = "Name"
         
         return label
     }()
@@ -46,6 +49,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         label.text = "@ekaterina_nov"
         label.textColor = .ypGray
         label.font = .systemFont(ofSize: 13)
+        label.accessibilityIdentifier = "Login"
         
         return label
     }()

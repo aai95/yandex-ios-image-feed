@@ -28,6 +28,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R5P-OT-xKy" userLabel="Login Button">
                                 <rect key="frame" x="16" y="640" width="343" height="48"/>
                                 <color key="backgroundColor" name="YP White (iOS)"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authorize"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="b2B-tl-e6q"/>
                                 </constraints>
@@ -208,6 +209,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iHQ-7K-UDj" userLabel="Back Button">
                                 <rect key="frame" x="0.0" y="47" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Back"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="nOV-oX-SId"/>
                                     <constraint firstAttribute="width" secondItem="iHQ-7K-UDj" secondAttribute="height" multiplier="1:1" id="v6Q-YT-B90"/>

@@ -34,6 +34,7 @@ final class WebViewViewController: UIViewController, WebViewViewControllerProtoc
         super.viewDidLoad()
         
         webView.navigationDelegate = self
+        webView.accessibilityIdentifier = "LoginPage"
         
         presenter?.viewDidLoad()
         observeWebViewEstimatedProgress()
