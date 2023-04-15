@@ -5,6 +5,8 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private var scrollView: UIScrollView!
     @IBOutlet private var imageView: UIImageView!
     
+    private var alertPresenter: AlertPresenter?
+    
     var imageLink: String! {
         didSet {
             guard isViewLoaded else {
@@ -20,6 +22,8 @@ final class SingleImageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        alertPresenter = AlertPresenter(delegate: self)
         
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
@@ -80,35 +84,27 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: offsetX, y: offsetY), animated: false)
     }
     
-    private func presentNetworkErrorAlert() { // TODO: Move method to AlertPresenter
-        let controller = UIAlertController(
-            title: "Что-то пошло не так",
-            message: "Попробовать ещё раз?",
-            preferredStyle: .alert
-        )
-        let cancel = UIAlertAction(
+    private func presentNetworkErrorAlert() {
+        let cancelActionModel = AlertActionModel(
             title: "Отменить",
             style: .cancel
-        ) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            self.didTapBackButton()
-        }
-        let retry = UIAlertAction(
+        )
+        let retryActionModel = AlertActionModel(
             title: "Повторить",
-            style: .default
-        ) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            self.downloadImage()
-        }
-        controller.addAction(cancel)
-        controller.addAction(retry)
-        controller.preferredAction = retry
-        
-        present(controller, animated: true)
+            handler: { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.downloadImage()
+            },
+            isPreferred: true
+        )
+        let alertModel = AlertModel(
+            title: "Что-то пошло не так",
+            message: "Попробовать ещё раз?",
+            actions: [cancelActionModel, retryActionModel]
+        )
+        alertPresenter?.presentAlert(model: alertModel)
     }
 }
 
@@ -128,5 +124,12 @@ extension SingleImageViewController: UIScrollViewDelegate {
         let insetY = max((visibleAreaSize.height - newContentSize.height) / 2, 0)
         
         scrollView.contentInset = UIEdgeInsets(top: insetY, left: insetX, bottom: 0, right: 0)
+    }
+}
+
+extension SingleImageViewController: AlertPresenterDelegate {
+    
+    func didPresentAlert(controller: UIAlertController) {
+        present(controller, animated: true)
     }
 }

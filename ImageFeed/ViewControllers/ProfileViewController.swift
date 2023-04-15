@@ -1,11 +1,13 @@
 import UIKit
 import Kingfisher
 
-final class ProfileViewController: UIViewController {
-    
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private let tokenStorage = OAuth2TokenStorage.shared
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateProfile(model: Profile)
+    func updateProfileImage(url: URL)
+    func logoutProfile()
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     
     private let profileImage: UIImageView = {
         let image = UIImageView(image: UIImage(named: "Profile Image"))
@@ -14,6 +16,7 @@ final class ProfileViewController: UIViewController {
         image.layer.cornerRadius = 35
         image.widthAnchor.constraint(equalToConstant: 70).isActive = true
         image.heightAnchor.constraint(equalTo: image.widthAnchor).isActive = true
+        image.accessibilityIdentifier = "Profile"
         
         return image
     }()
@@ -24,6 +27,7 @@ final class ProfileViewController: UIViewController {
         button.setImage(UIImage(named: "Logout Button"), for: .normal)
         button.widthAnchor.constraint(equalToConstant: 40).isActive = true
         button.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
+        button.accessibilityIdentifier = "Logout"
         
         return button
     }()
@@ -34,6 +38,7 @@ final class ProfileViewController: UIViewController {
         label.text = "Екатерина Новикова"
         label.textColor = .ypWhite
         label.font = .boldSystemFont(ofSize: 23)
+        label.accessibilityIdentifier = "Name"
         
         return label
     }()
@@ -44,6 +49,7 @@ final class ProfileViewController: UIViewController {
         label.text = "@ekaterina_nov"
         label.textColor = .ypGray
         label.font = .systemFont(ofSize: 13)
+        label.accessibilityIdentifier = "Login"
         
         return label
     }()
@@ -59,20 +65,74 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
+    private var presenter: ProfilePresenterProtocol!
+    private var alertPresenter: AlertPresenter?
     private var profileImageServiceObserver: NSObjectProtocol?
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
     
-    // MARK: - Life cycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeProfileViewLayout()
-        updateProfileDetails()
+        alertPresenter = AlertPresenter(delegate: self)
         
+        makeProfileViewLayout()
+        subscribeToProfileImageUpdate()
+        
+        presenter.presentProfile()
+        presenter.presentProfileImage()
+    }
+    
+    func configure(presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        self.presenter.controller = self
+    }
+    
+    func updateProfile(model: Profile) {
+        nameLabel.text = model.name
+        loginLabel.text = model.login
+        descriptionLabel.text = model.bio
+    }
+    
+    func updateProfileImage(url: URL) {
+        profileImage.kf.indicatorType = .activity
+        (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
+        profileImage.kf.setImage(with: url)
+    }
+    
+    func logoutProfile() {
+        guard let window = UIApplication.shared.windows.first else {
+            preconditionFailure("Failed to find UIWindow in UIApplication")
+        }
+        window.rootViewController = SplashViewController()
+    }
+    
+    @objc private func didTapLogoutButton() {
+        let noActionModel = AlertActionModel(
+            title: "Нет",
+            style: .cancel,
+            isPreferred: true
+        )
+        let yesActionModel = AlertActionModel(
+            title: "Да",
+            handler: { [weak self] _ in
+                guard let self = self else {
+                    return
+                }
+                self.presenter.removeUserDataBeforeLogout()
+            }
+        )
+        let alertModel = AlertModel(
+            title: "Пока-пока!",
+            message: "Уверены что хотите выйти?",
+            actions: [noActionModel, yesActionModel]
+        )
+        alertPresenter?.presentAlert(model: alertModel)
+    }
+    
+    private func subscribeToProfileImageUpdate() {
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ProfileImageService.didChangeNotification,
@@ -82,74 +142,22 @@ final class ProfileViewController: UIViewController {
                 guard let self = self else {
                     return
                 }
-                self.updateProfileImage()
+                self.presenter.presentProfileImage()
             }
-        
-        updateProfileImage()
     }
+}
+
+extension ProfileViewController: AlertPresenterDelegate {
     
-    // MARK: - Private functions
-    
-    private func updateProfileDetails() {
-        guard let profile = profileService.profile else {
-            return
-        }
-        nameLabel.text = profile.name
-        loginLabel.text = profile.login
-        descriptionLabel.text = profile.bio
-    }
-    
-    private func updateProfileImage() {
-        guard let link = profileImageService.profileImageLink,
-              let url = URL(string: link)
-        else {
-            return
-        }
-        profileImage.kf.indicatorType = .activity
-        (profileImage.kf.indicator?.view as? UIActivityIndicatorView)?.color = .ypWhite
-        profileImage.kf.setImage(with: url)
-    }
-    
-    @objc private func didTapLogoutButton() { // TODO: Move method to AlertPresenter
-        let controller = UIAlertController(
-            title: "Пока-пока!",
-            message: "Уверены что хотите выйти?",
-            preferredStyle: .alert
-        )
-        let no = UIAlertAction(
-            title: "Нет",
-            style: .cancel
-        )
-        let yes = UIAlertAction(
-            title: "Да",
-            style: .default
-        ) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            self.profileLogout()
-        }
-        controller.addAction(no)
-        controller.addAction(yes)
-        controller.preferredAction = no
-        
+    func didPresentAlert(controller: UIAlertController) {
         present(controller, animated: true)
     }
+}
+
+private extension ProfileViewController {
     
-    private func profileLogout() {
-        tokenStorage.removeAuthToken()
-        WebViewViewController.removeCookiesAndWebsiteData()
-        
-        guard let window = UIApplication.shared.windows.first else {
-            preconditionFailure("Failed to find UIWindow in UIApplication")
-        }
-        window.rootViewController = SplashViewController()
-    }
-    
-    // MARK: - Private layout functions
-    
-    private func makeProfileViewLayout() {
-        let mainStack = createVerticalStack()
+    func makeProfileViewLayout() {
+        let mainStack = makeVerticalStack()
         
         view.addSubview(mainStack)
         view.backgroundColor = UIColor.ypBlack
@@ -163,13 +171,13 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func createVerticalStack() -> UIStackView {
+    func makeVerticalStack() -> UIStackView {
         let vStack = UIStackView()
         
         vStack.axis = .vertical
         vStack.spacing = 8
         
-        vStack.addArrangedSubview(createHorizontalStack())
+        vStack.addArrangedSubview(makeHorizontalStack())
         vStack.addArrangedSubview(nameLabel)
         vStack.addArrangedSubview(loginLabel)
         vStack.addArrangedSubview(descriptionLabel)
@@ -177,7 +185,7 @@ final class ProfileViewController: UIViewController {
         return vStack
     }
     
-    private func createHorizontalStack() -> UIStackView {
+    func makeHorizontalStack() -> UIStackView {
         let hStack = UIStackView()
         
         hStack.axis = .horizontal

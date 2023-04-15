@@ -10,3 +10,11 @@ let baseAPIURL = URL(string: "https://api.unsplash.com")!
 
 let authHeader = "Authorization"
 let tokenType = "Bearer"
+
+let defaultAuthConfig = AuthConfiguration(
+    baseURL: baseURL,
+    clientID: accessKey,
+    redirectURI: redirectURI,
+    responseType: "code",
+    scope: accessScope
+)
